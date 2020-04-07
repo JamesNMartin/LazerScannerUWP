@@ -1,0 +1,58 @@
+﻿<Page
+    x:Class="LazerScannerUWP.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:LazerScannerUWP"
+    xmlns:appmodel="using:Windows.ApplicationModel"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}">
+
+    <Grid Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}">
+        <NavigationView x:Name="MainContent"
+                        Header="Home Food Inventory Application"
+                        Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}"
+                        AlwaysShowHeader="True"
+                        IsBackButtonVisible="Collapsed"
+                        IsBackEnabled="False"
+                        IsSettingsVisible="True"
+                        SelectionChanged="OnSelectionChanged">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Home" Tag="home">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE10F;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItemSeparator HorizontalContentAlignment="Stretch"/>
+                <NavigationViewItem Content="Add / Remove Items" Tag="add_item" >
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEE6F;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="View Items" Tag="view_item" >
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEA37;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Shopping List" Tag="shopping_list">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE719;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Statistics" Tag="statistics">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE9D2;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+            <Frame x:Name="ContentFrame">
+                <Frame.ContentTransitions>
+                    <TransitionCollection>
+                        <NavigationThemeTransition />
+                    </TransitionCollection>
+                </Frame.ContentTransitions>
+            </Frame>
+        </NavigationView>
+    </Grid>
+</Page>

@@ -1,0 +1,36 @@
+﻿<Page
+    x:Class="LazerScannerUWP.WelcomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:LazerScannerUWP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Welcome to Lazer Scanner"
+                       TextWrapping="WrapWholeWords"
+                       TextAlignment="Center"
+                       FontFamily="Segoe"
+                       FontSize="48">
+            </TextBlock>
+            <TextBlock Text="Lazer Scanner provides a great way to organize and display your pantry inventory."
+                       Margin="0 20 0 0"
+                       TextWrapping="WrapWholeWords"
+                       TextAlignment="Center"
+                       FontFamily="Segoe"
+                       FontWeight="Light"
+                       FontSize="24"/>
+            <TextBlock Text="Click Settings to Sign in!"
+                       Margin="0 20 0 0"
+                       TextWrapping="WrapWholeWords"
+                       TextAlignment="Center"
+                       FontFamily="Segoe"
+                       FontWeight="Light"
+                       FontSize="20"/>
+        </StackPanel>
+    </Grid>
+</Page>
