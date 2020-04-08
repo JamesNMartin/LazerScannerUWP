@@ -54,6 +54,8 @@ where ean = 051000059772
 
 --Use this for master list of items. It will NOT truncate the results. (At least with 11 items)
 SELECT (select * from Items FOR JSON PATH, ROOT('Items'))
+SELECT (select * from Items FOR JSON PATH)
+
 
 INSERT INTO Items(purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl)
 VALUES('000342400301102003311302',
