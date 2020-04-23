@@ -1,24 +1,10 @@
-use ItemDirectory
-
-/*CREATE TABLE Items (
-		[id] int not null identity,
-		[ean] nvarchar(255),
-		[title] nvarchar(255),
-		[upc] nvarchar(255),
-		[description] TEXT,
-		[brand] nvarchar(255),
-		[model] nvarchar(255),
-		[weight] nvarchar(255),
-		[quantity] nvarchar(255),
-		[scandate] date,
-		PRIMARY KEY( [id] )
-	);
-*/
+use LazerScanner
 
 DROP TABLE Items
 
 
-/* TABLE WITH INDEX AS EAN */
+/* ITEM TABLE FOR STORING USER ITEMS */
+/* MARK PERISABLE AS BOOL IN THE TABLE */
 CREATE TABLE Items (
 		[userId] int,
 		[purchaseGroup] nvarchar(255),
@@ -33,9 +19,27 @@ CREATE TABLE Items (
 		[quantity] int,
 		[scandate] date,
 		[imageurl] nvarchar(max),
+		PRIMARY KEY( [userId] )
+	);
+
+/* ITEM TABLE FOR STORING ITEM DATA COPIED FROM API */
+/* APPLICATION WILL CHECK STORED ITEMS FIRST BEFORE CALLING THE API LOOKUP */
+CREATE TABLE StoredItems (
+		[ean] bigint,
+		[title] nvarchar(255),
+		[upc] bigint,
+		[description] nvarchar(max),
+		[brand] nvarchar(255),
+		[model] nvarchar(255),
+		[weight] nvarchar(255),
+		[category] nvarchar(255),
+		[imageurl] nvarchar(max),
 		PRIMARY KEY( [ean] )
 	);
 
+SELECT I.userId,purchaseGroup,title,upc,description,brand,category,quantity,scandate,imageurl
+FROM Items as I INNER JOIN Users as U
+ON I.userId = U.UserID
 
 select COUNT(*)
 from Items
@@ -47,18 +51,15 @@ select upc
 from Items
 where ean = 051000059772
 
---Dont use this one because it truncates the results
---select *
---from Items
---FOR JSON PATH, ROOT('Items')
-
 --Use this for master list of items. It will NOT truncate the results. (At least with 11 items)
 SELECT (select * from Items FOR JSON PATH, ROOT('Items'))
+--Use this one \/
 SELECT (select * from Items FOR JSON PATH)
 
 
-INSERT INTO Items(purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl)
-VALUES('000342400301102003311302',
+INSERT INTO Items(userId,purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl)
+VALUES('UID00000001',
+	   '000342400301102003311302',
 	   '051000059772',
 	   'Campbell''s Healthy Request Cream Of Chicken Soup, 10.75 Oz',
 	   '051000059772',
@@ -96,5 +97,5 @@ where upc = 79400764201
 
 
 DELETE FROM Items
-WHERE ean = 79400457400;
+WHERE ean = 51000197597;
 

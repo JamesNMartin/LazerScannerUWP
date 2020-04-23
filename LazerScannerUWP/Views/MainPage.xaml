@@ -11,7 +11,7 @@
 
     <Grid Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}">
         <NavigationView x:Name="MainContent"
-                        Header="Home Food Inventory Application"
+                        Header=""
                         Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}"
                         AlwaysShowHeader="True"
                         IsBackButtonVisible="Collapsed"
@@ -25,7 +25,7 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItemSeparator HorizontalContentAlignment="Stretch"/>
-                <NavigationViewItem Content="Add / Remove Items" Tag="add_item" >
+                <NavigationViewItem Content="Add Items" Tag="add_item" >
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEE6F;" />
                     </NavigationViewItem.Icon>

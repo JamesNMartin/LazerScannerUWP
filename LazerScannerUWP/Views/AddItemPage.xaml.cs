@@ -30,7 +30,7 @@ namespace LazerScannerUWP
     {
         private int XRateLimitRemaining = 0;
         private const string API_TEST_URL = "https://api.upcitemdb.com/prod/trial/lookup?upc=";
-        private string SQL_DATA_CONNECTION = "Data Source=tcp:73.118.249.57;Initial Catalog=ItemDirectory;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
+        private string SQL_DATA_CONNECTION = "Data Source=tcp:73.118.249.57;Initial Catalog=LazerScanner;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
 
 
         public AddItemPage()
@@ -94,7 +94,7 @@ namespace LazerScannerUWP
             }
             else if (requestResponse.code == "OK" && requestResponse.total == 0)
             {
-                Console.WriteLine("Not found on UPCItemDB. Set item aside, you'll have to manually enter data later.\n");
+                //Console.WriteLine("Not found on UPCItemDB. Set item aside, you'll have to manually enter data later.\n");
             }
             else
             {
@@ -108,9 +108,10 @@ namespace LazerScannerUWP
                 string webCategory = requestResponse.items[0].category; //TODO #1 go through this string and pull out the category
                 string imageURL = requestResponse.items[0].images[0];
 
+                string userId = "UID00000001";//TODO HOOK INTO SQL SERVER
+                
                 // FORMATTING ALL THE TEXT TO HAVE DOUBLE SINGLE QUOTE SO SQL QUERY IS NOT ENDED IN THE WRONG PLACE
                 string formatterPurchaseGroup = SQLArguementFormatter(recieptbarcodeInput.Text);
-
                 string formattedTitle = SQLArguementFormatter(webTitle);
                 itemName.Text = formattedTitle;
                 string formattedDesc = SQLArguementFormatter(webDesc);
@@ -124,6 +125,7 @@ namespace LazerScannerUWP
                 string formattedCategory = SQLArguementFormatter(webCategory);
                 itemCategory.Text = formattedCategory; //TODO Refer to #1
 
+                //NUMBER OF SCANS REMAINING FROM UPCITEMDB API 100/day
                 requestsRemaining.Text = "Number of scans remaining: " + XRateLimitRemaining.ToString();
 
 
@@ -131,14 +133,14 @@ namespace LazerScannerUWP
                 int quanNeeded = 1;
                 using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
                 {
-                    string oString = $"INSERT INTO Items(purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl)VALUES('{formatterPurchaseGroup}','{webEan}','{formattedTitle}','{webUpc}','{formattedDesc}','{formattedBrand}','{formattedModel}','{formattedWeight}','{formattedCategory}','{quanNeeded}','{scannedDate}','{imageURL}')";
+                    string oString = $"INSERT INTO Items(userId,purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl)VALUES('{userId}','{formatterPurchaseGroup}','{webEan}','{formattedTitle}','{webUpc}','{formattedDesc}','{formattedBrand}','{formattedModel}','{formattedWeight}','{formattedCategory}','{quanNeeded}','{scannedDate}','{imageURL}')";
                     SqlCommand oCmd = new SqlCommand(oString, myConnection);
                     myConnection.Open();
                     using (SqlDataReader oReader = oCmd.ExecuteReader())
                     {
                         myConnection.Close();
                     }
-                    Console.WriteLine("Item added to SQL server");
+                    //Console.WriteLine("Item added to SQL server");
                 }
             }
         }
@@ -198,7 +200,7 @@ namespace LazerScannerUWP
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            descriptionTextbox.Text = JSONFromServer();
+            //descriptionTextbox.Text = JSONFromServer();
         }
         private void ClearConfirmation_Click(object sender, RoutedEventArgs e)
         {
@@ -210,11 +212,6 @@ namespace LazerScannerUWP
             itemWeight.Text = string.Empty;
             itemCategory.Text = string.Empty;
             descriptionTextbox.Text = string.Empty;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

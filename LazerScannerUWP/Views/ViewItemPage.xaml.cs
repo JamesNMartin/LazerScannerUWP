@@ -27,7 +27,7 @@ namespace LazerScannerUWP
     public sealed partial class ViewItemPage : Page
     {
 
-        private string SQL_DATA_CONNECTION = "Data Source=tcp:73.118.249.57;Initial Catalog=ItemDirectory;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
+        private string SQL_DATA_CONNECTION = "Data Source=tcp:73.118.249.57;Initial Catalog=LazerScanner;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
 
         public ViewItemPage()
         {
@@ -43,6 +43,9 @@ namespace LazerScannerUWP
 
             foreach (JObject result in resultObjects)
             {
+                //Come back to this
+
+                //string userId = (string)result.GetValue("userId");
                 string purchaseGroup = (string)result.GetValue("purchaseGroup");
                 long ean = (long)result.GetValue("ean");
                 string title = (string)result.GetValue("title");
@@ -56,7 +59,8 @@ namespace LazerScannerUWP
                 DateTime scandate = (DateTime)result.GetValue("scandate");
                 string imageurl = (string)result.GetValue("imageurl");
                 
-                Item newItem = new Item(purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl);
+                //Dont need this. Creating a data model for this instead.
+                //Item newItem = new Item(purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl);
             }
         }
         private static IEnumerable<JToken> AllChildren(JToken json)

@@ -30,13 +30,6 @@
                          CornerRadius="4"/>
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
-                    <muxc:ProgressBar Width="200" 
-                                  IsIndeterminate="False"    
-                                  ShowPaused="False" 
-                                  ShowError="False"
-                                  HorizontalAlignment="Right"
-                                  VerticalAlignment="Center"
-                                  Margin="10,0,10,0"/>
                     <Button x:Name="lookupButton"
                         CornerRadius="4"
                         Background="{ThemeResource SystemAccentColor}"

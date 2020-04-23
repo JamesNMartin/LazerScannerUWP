@@ -26,5 +26,24 @@ namespace LazerScannerUWP
         {
             this.InitializeComponent();
         }
+
+        private void SignInButton_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO Create user object
+            emailTextField.Text = string.Empty;
+            passwordTextField.Password = string.Empty;
+        }
+
+        private void CreateAcctButton_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO Create user object
+            emailTextField.Text = string.Empty;
+            passwordTextField.Password = string.Empty;
+        }
+
+        private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
