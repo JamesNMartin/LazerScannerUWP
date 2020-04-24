@@ -6,7 +6,7 @@ DROP TABLE Items
 /* ITEM TABLE FOR STORING USER ITEMS */
 /* MARK PERISABLE AS BOOL IN THE TABLE */
 CREATE TABLE Items (
-		[userId] int,
+		[userId] VARCHAR(11),
 		[purchaseGroup] nvarchar(255),
 		[ean] bigint,
 		[title] nvarchar(255),
@@ -18,8 +18,7 @@ CREATE TABLE Items (
 		[category] nvarchar(255),
 		[quantity] int,
 		[scandate] date,
-		[imageurl] nvarchar(max),
-		PRIMARY KEY( [userId] )
+		[imageurl] nvarchar(max)
 	);
 
 /* ITEM TABLE FOR STORING ITEM DATA COPIED FROM API */
@@ -52,7 +51,7 @@ from Items
 where ean = 051000059772
 
 --Use this for master list of items. It will NOT truncate the results. (At least with 11 items)
-SELECT (select * from Items FOR JSON PATH, ROOT('Items'))
+SELECT (select * from Items WHERE userId = 'UID00000001' FOR JSON PATH, ROOT('Items'))
 --Use this one \/
 SELECT (select * from Items FOR JSON PATH)
 

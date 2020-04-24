@@ -71,10 +71,12 @@ namespace LazerScannerUWP
                 int rowAffected = cmd.ExecuteNonQuery();
                 if (rowAffected == 1)
                 {
+                    myConnection.Close();
                     return true;
                 }
                 else
                 {
+                    myConnection.Close();
                     return false;
                 }
             }
@@ -108,7 +110,7 @@ namespace LazerScannerUWP
                 string webCategory = requestResponse.items[0].category; //TODO #1 go through this string and pull out the category
                 string imageURL = requestResponse.items[0].images[0];
 
-                string userId = "UID00000001";//TODO HOOK INTO SQL SERVER
+                string userId = "UID00000004";//TODO HOOK INTO SQL SERVER
                 
                 // FORMATTING ALL THE TEXT TO HAVE DOUBLE SINGLE QUOTE SO SQL QUERY IS NOT ENDED IN THE WRONG PLACE
                 string formatterPurchaseGroup = SQLArguementFormatter(recieptbarcodeInput.Text);

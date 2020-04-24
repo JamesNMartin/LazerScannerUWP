@@ -1,4 +1,4 @@
-Use LazerScanner
+ Use LazerScanner
 
 DROP TABLE Users
 
@@ -9,10 +9,10 @@ CREATE TABLE Users (
 		[password] nvarchar(255)
 		);
 
-INSERT INTO Users(email,password)
-VALUES('sample@email.com','BadPassword123')
-
+INSERT INTO Users(email,password)OUTPUT inserted.UserID VALUES('sample@email.com','5amp13Pa5sw0rd') 
 
 SELECT * 
 FROM Users
 
+DELETE FROM Users
+WHERE UserID = 'UID00000001';

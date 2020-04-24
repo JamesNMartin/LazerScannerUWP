@@ -5,10 +5,30 @@
     xmlns:local="using:LazerScannerUWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:data="using:LazerScannerUWP.Models"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+
+        <GridView ItemsSource="{x:Bind Items}">
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="data:Item">
+                    <StackPanel Margin="0,0,0,0"
+                                Background="Transparent"
+                                Width="150"
+                                Height="auto">
+                        <Image Width="150" Source="{x:Bind imageurl}"/>
+                        <TextBlock FontSize="12" Text="{x:Bind title}" TextWrapping="Wrap"/>
+                        <TextBlock FontSize="10" FontWeight="Bold" Text="{x:Bind brand}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
 
     </Grid>
 </Page>

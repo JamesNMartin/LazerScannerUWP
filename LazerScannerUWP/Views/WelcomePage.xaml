@@ -15,7 +15,14 @@
                        TextWrapping="WrapWholeWords"
                        TextAlignment="Center"
                        FontFamily="Segoe"
-                       FontSize="36">
+                       FontSize="36"
+                       Margin="0,10,0,10">
+            </TextBlock>
+            <TextBlock Text="Please Sign In"
+                       TextWrapping="WrapWholeWords"
+                       TextAlignment="Center"
+                       FontFamily="Segoe"
+                       FontSize="24">
             </TextBlock>
         </StackPanel>
         <StackPanel HorizontalAlignment="Center"
