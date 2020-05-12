@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using LazerScannerUWP.Models;
+using LazerScannerUWP.Views;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -32,8 +33,13 @@ namespace LazerScannerUWP
         public ViewItemPage()
         {
             this.InitializeComponent();
-            Items = ItemManager.GetItemList("UID00000004");
+            Items = ItemManager.GetItemList(Globals.uid);
         }
-        
+
+        private void GridView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var item = (Item)e.ClickedItem;
+            ItemContentDialog.Show(item);
+        }
     }
 }

@@ -34,7 +34,8 @@ namespace LazerScannerUWP.Models
         {
             var items = new List<Item>();
 
-            string json = JSONFromServer(uid);
+            //TODO This may reply with null if there is no items for the user. It is currently not handled.
+            string json = JSONFromServer(uid); 
             var resultObjects = AllChildren(JObject.Parse(json))
             .First(c => c.Type == JTokenType.Array && c.Path.Contains("Items"))
             .Children<JObject>();
@@ -45,11 +46,11 @@ namespace LazerScannerUWP.Models
                 string theUserId = (string)result.GetValue("userId");
                 string thePurchaseGroup = (string)result.GetValue("purchaseGroup");
                 long theEan = (long)result.GetValue("ean");
-                string theTitle = (string)result.GetValue("title");
+                string theTitle = CapitalizeFirstLetter((string)result.GetValue("title"));
                 long theUpc = (long)result.GetValue("upc");
-                string theDescription = (string)result.GetValue("description");
-                string theBrand = (string)result.GetValue("brand");
-                string theModel = (string)result.GetValue("model");
+                string theDescription = CapitalizeFirstLetter((string)result.GetValue("description"));
+                string theBrand = CapitalizeFirstLetter((string)result.GetValue("brand"));
+                string theModel = CapitalizeFirstLetter((string)result.GetValue("model"));
                 string theWeight = (string)result.GetValue("weight");
                 string theCategory = (string)result.GetValue("category");
                 int theQuantity = (int)result.GetValue("quantity");
@@ -76,6 +77,33 @@ namespace LazerScannerUWP.Models
             }
             return items;
         }
+        private static string CapitalizeFirstLetter(string value)
+        {
+            //In Case if the entire string is in UpperCase then convert it into lower
+            value = value.ToLower();
+            char[] array = value.ToCharArray();
+            // Handle the first letter in the string.
+            if (array.Length >= 1)
+            {
+                if (char.IsLower(array[0]))
+                {
+                    array[0] = char.ToUpper(array[0]);
+                }
+            }
+            // Scan through the letters, checking for spaces.
+            // ... Uppercase the lowercase letters following spaces.
+            for (int i = 1; i < array.Length; i++)
+            {
+                if (array[i - 1] == ' ')
+                {
+                    if (char.IsLower(array[i]))
+                    {
+                        array[i] = char.ToUpper(array[i]);
+                    }
+                }
+            }
+            return new string(array);
+        }
         private static IEnumerable<JToken> AllChildren(JToken json)
         {
             foreach (var c in json.Children())
@@ -100,7 +128,14 @@ namespace LazerScannerUWP.Models
                 {
                     while (oReader.Read())
                     {
-                        return (string)oReader.GetValue(0);
+                        if ((string)oReader.GetValue(0) == null)
+                        {
+                            return null;
+                        }
+                        else
+                        {
+                            return (string)oReader.GetValue(0);
+                        }
                     }
                 }
                 return null;

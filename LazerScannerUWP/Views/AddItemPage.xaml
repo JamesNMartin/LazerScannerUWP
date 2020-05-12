@@ -5,7 +5,8 @@
     xmlns:local="using:LazerScannerUWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:muxc="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+    xmlns:muxc="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -43,10 +44,16 @@
                         </Button.Content>
                     </Button>
                 </StackPanel>
-                <ToggleSwitch x:Name="auto_switch"
-                              Header="Auto Entry"
-                              IsOn="True">
-                </ToggleSwitch>
+                <StackPanel Orientation="Horizontal">
+                    <ToggleSwitch x:Name="perishable_switch"
+                                  Header="Perishable Entry"
+                                  IsOn="True">
+                    </ToggleSwitch>
+                    <ToggleSwitch x:Name="auto_switch"
+                                  Header="Auto Entry"
+                                  IsOn="True">
+                    </ToggleSwitch>
+                </StackPanel>
                 <TextBox x:Name="itemName"
                          Header="Item Name"
                          HorizontalContentAlignment="Stretch"
@@ -127,6 +134,5 @@
                 </Button>
             </StackPanel>
         </controls:DockPanel>
-
     </Grid>
 </Page>

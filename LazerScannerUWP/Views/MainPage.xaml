@@ -30,7 +30,7 @@
                         <FontIcon Glyph="&#xEE6F;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="View Items" Tag="view_item" >
+                <NavigationViewItem Content="Inventory" Tag="view_item" x:Name="viewItemTab">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEA37;" />
                     </NavigationViewItem.Icon>

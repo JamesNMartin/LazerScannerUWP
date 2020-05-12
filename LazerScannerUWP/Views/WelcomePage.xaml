@@ -16,13 +16,13 @@
                        TextAlignment="Center"
                        FontFamily="Segoe"
                        FontSize="36"
-                       Margin="0,10,0,10">
+                       Margin="0,100,0,10">
             </TextBlock>
-            <TextBlock Text="Please Sign In"
+            <TextBlock Text="Please sign in or create account"
                        TextWrapping="WrapWholeWords"
                        TextAlignment="Center"
                        FontFamily="Segoe"
-                       FontSize="24">
+                       FontSize="16">
             </TextBlock>
         </StackPanel>
         <StackPanel HorizontalAlignment="Center"
@@ -30,8 +30,12 @@
                     Width="340"
                     Background="White"
                     CornerRadius="4">
+            <PersonPicture Margin="0,10,0,10">
+                
+            </PersonPicture>
             <TextBox x:Name="emailTextField"
                      Header="E-Mail Address"
+                     IsSpellCheckEnabled="False"
                      Width="300"
                      Margin="0,10,0,0"
                      PlaceholderText="sample@email.com"

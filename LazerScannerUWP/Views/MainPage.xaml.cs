@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Uwp.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,6 +22,15 @@ using Windows.UI.Xaml.Navigation;
 
 namespace LazerScannerUWP
 {
+    static class Globals
+    {
+        public static string uid;
+        public static bool perishable;
+        public static bool isLoggedIn;
+
+        private static string API_TEST_URL = "https://api.upcitemdb.com/prod/trial/lookup?upc=";
+        private static string SQL_DATA_CONNECTION = "Data Source=tcp:[IP ADDRESS];Initial Catalog=LazerScanner;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
+    }
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
@@ -29,7 +39,6 @@ namespace LazerScannerUWP
         public MainPage()
         {
             this.InitializeComponent();
-
             // Use system back button to navigate back between content pages.
             SystemNavigationManager.GetForCurrentView().BackRequested += MainPage_BackRequested;
             this.ContentFrame.Navigated += ContentFrame_Navigated;
@@ -102,33 +111,45 @@ namespace LazerScannerUWP
         {
             var item = args.SelectedItem as NavigationViewItem;
             var tag = item.Tag.ToString();
-            Console.WriteLine("TAG: " + tag);
+            //Console.WriteLine("TAG: " + tag);
 
             if (tag.ToLowerInvariant().Equals("home"))
             {
                 ContentFrame.Navigate(typeof(WelcomePage));
-                ContentFrame.BackStack.Clear();
+                MainContent.Header = "Home";
+                //ContentFrame.BackStack.Clear();
                 //this.UpdateAppBackButton();
                 return;
             }
             if (tag.ToLowerInvariant().Equals("add_item"))
             {
                 ContentFrame.Navigate(typeof(AddItemPage));
-                ContentFrame.BackStack.Clear();
+                MainContent.Header = "Add Items";
+                //ContentFrame.BackStack.Clear();
                 //this.UpdateAppBackButton();
                 return;
             }
             if (tag.ToLowerInvariant().Equals("view_item"))
             {
                 ContentFrame.Navigate(typeof(ViewItemPage));
-                ContentFrame.BackStack.Clear();
+                MainContent.Header = "Inventory";
+                //ContentFrame.BackStack.Clear();
                 //this.UpdateAppBackButton();
                 return;
             }
             if (tag.ToLowerInvariant().Equals("shopping_list"))
             {
                 ContentFrame.Navigate(typeof(ShoppingListPage));
-                ContentFrame.BackStack.Clear();
+                MainContent.Header = "Shopping List";
+                //ContentFrame.BackStack.Clear();
+                //this.UpdateAppBackButton();
+                return;
+            }
+            if (tag.ToLowerInvariant().Equals("statistics"))
+            {
+                ContentFrame.Navigate(typeof(StatisticsPage));
+                MainContent.Header = "Statistics";
+                //ContentFrame.BackStack.Clear();
                 //this.UpdateAppBackButton();
                 return;
             }

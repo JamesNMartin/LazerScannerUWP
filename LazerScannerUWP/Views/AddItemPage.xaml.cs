@@ -38,6 +38,7 @@ namespace LazerScannerUWP
             this.InitializeComponent();
             scanDatePicker.SelectedDate = DateTime.Now;
             
+            
         }
 
         public dynamic WebLookup(long upc)
@@ -110,7 +111,7 @@ namespace LazerScannerUWP
                 string webCategory = requestResponse.items[0].category; //TODO #1 go through this string and pull out the category
                 string imageURL = requestResponse.items[0].images[0];
 
-                string userId = "UID00000004";//TODO HOOK INTO SQL SERVER
+                //string userId = "UID00000004";//TODO HOOK INTO SQL SERVER
                 
                 // FORMATTING ALL THE TEXT TO HAVE DOUBLE SINGLE QUOTE SO SQL QUERY IS NOT ENDED IN THE WRONG PLACE
                 string formatterPurchaseGroup = SQLArguementFormatter(recieptbarcodeInput.Text);
@@ -135,7 +136,7 @@ namespace LazerScannerUWP
                 int quanNeeded = 1;
                 using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
                 {
-                    string oString = $"INSERT INTO Items(userId,purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl)VALUES('{userId}','{formatterPurchaseGroup}','{webEan}','{formattedTitle}','{webUpc}','{formattedDesc}','{formattedBrand}','{formattedModel}','{formattedWeight}','{formattedCategory}','{quanNeeded}','{scannedDate}','{imageURL}')";
+                    string oString = $"INSERT INTO Items(userId,purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl)VALUES('{Globals.uid}','{formatterPurchaseGroup}','{webEan}','{formattedTitle}','{webUpc}','{formattedDesc}','{formattedBrand}','{formattedModel}','{formattedWeight}','{formattedCategory}','{quanNeeded}','{scannedDate}','{imageURL}')";
                     SqlCommand oCmd = new SqlCommand(oString, myConnection);
                     myConnection.Open();
                     using (SqlDataReader oReader = oCmd.ExecuteReader())

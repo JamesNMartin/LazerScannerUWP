@@ -14,5 +14,8 @@ INSERT INTO Users(email,password)OUTPUT inserted.UserID VALUES('sample@email.com
 SELECT * 
 FROM Users
 
+SELECT UserID FROM Users WHERE email = 'jamesnicholasmartin@gmail.com' AND password='password'
+SELECT (SELECT UserID FROM Users WHERE email = 'jamesnicholasmartin@gmail.com' AND password='password')
+
 DELETE FROM Users
-WHERE UserID = 'UID00000001';
+WHERE UserID = 'UID00000005';

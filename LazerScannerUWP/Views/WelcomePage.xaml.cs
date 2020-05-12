@@ -15,11 +15,12 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+using LazerScannerUWP.Views;
+using System.Threading;
 
 namespace LazerScannerUWP
 {
+    
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
@@ -39,6 +40,32 @@ namespace LazerScannerUWP
             if (emailTextField.Text == "" || passwordTextField.Password == "")
             {
                 Msgbox.Show("Please enter email, and password");
+            } else
+            {
+                using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
+                {
+                    string oString = $"SELECT (SELECT UserID FROM Users WHERE email = '{emailTextField.Text}' AND password='{passwordTextField.Password}')";
+                    SqlCommand oCmd = new SqlCommand(oString, myConnection);
+                    myConnection.Open();
+                    using (SqlDataReader oReader = oCmd.ExecuteReader())
+                    {
+                        while (oReader.Read())
+                        {
+                            try
+                            {
+                                Globals.uid = (string)oReader.GetValue(0);
+                                //emailTextField.Text = Globals.uid;
+                                emailTextField.Text = "";
+                                passwordTextField.Password = "";
+                                this.Frame.Navigate(typeof(ViewItemPage));
+                            }
+                            catch (Exception)
+                            { 
+                                throw;//YOLO
+                            }
+                        }
+                    }
+                }
             }
         }
         
@@ -47,9 +74,12 @@ namespace LazerScannerUWP
             string email = emailTextField.Text;
             string pwd = passwordTextField.Password;
             string userID = CreateAccountOnSQLServer(email, pwd);//TODO Save this ID somehow for the session for later when we need to ge the items
+
+            Globals.uid = userID;
             
             emailTextField.Text = string.Empty;
             passwordTextField.Password = string.Empty;
+            this.Frame.Navigate(typeof(AddItemPage));
         }
 
         private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)
