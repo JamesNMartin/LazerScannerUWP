@@ -35,11 +35,15 @@ namespace LazerScannerUWP
             this.InitializeComponent();
             Items = ItemManager.GetItemList(Globals.uid);
         }
-
         private void GridView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (Item)e.ClickedItem;
             ItemContentDialog.Show(item);
+        }
+
+        private void RefreshController_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
+        {
+            
         }
     }
 }

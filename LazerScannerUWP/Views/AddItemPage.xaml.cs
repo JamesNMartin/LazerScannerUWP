@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Popups;
@@ -35,10 +36,8 @@ namespace LazerScannerUWP
 
         public AddItemPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             scanDatePicker.SelectedDate = DateTime.Now;
-            
-            
         }
 
         public dynamic WebLookup(long upc)
@@ -88,16 +87,17 @@ namespace LazerScannerUWP
             if (requestResponse.code == "INVALID_UPC")//TODO Handle all the codes
             {
                 //Console.WriteLine("Not found on UPCItemDB. Set item aside, you'll have to manually enter data later.\n");
+                requestsRemaining.Text = "Invalid UPC. If this persists, please add item manually.";
             }
             else if (requestResponse.code == "TOO_FAST")
             {
-                Console.WriteLine("##############################################");
-                Console.WriteLine("\nPlease wait a few minutes before scanning...\n");
-                Console.WriteLine("##############################################");
+                requestsRemaining.Text = "Scanning too fast. Try again in ~30sec.";
+
             }
             else if (requestResponse.code == "OK" && requestResponse.total == 0)
             {
                 //Console.WriteLine("Not found on UPCItemDB. Set item aside, you'll have to manually enter data later.\n");
+                requestsRemaining.Text = "Item not found. Item must be added manually.";
             }
             else
             {
@@ -109,9 +109,10 @@ namespace LazerScannerUWP
                 string webModel = requestResponse.items[0].model;
                 string webWeight = requestResponse.items[0].weight;
                 string webCategory = requestResponse.items[0].category; //TODO #1 go through this string and pull out the category
-                string imageURL = requestResponse.items[0].images[0];
-
-                //string userId = "UID00000004";//TODO HOOK INTO SQL SERVER
+                
+                
+                string imageURL = requestResponse.items[0].images[0];//TODO Some items do not have an image. (returns null?) Need to handle this
+                                                                     //TEST WITH 20LB BAG OF SAFEWAY RICE
                 
                 // FORMATTING ALL THE TEXT TO HAVE DOUBLE SINGLE QUOTE SO SQL QUERY IS NOT ENDED IN THE WRONG PLACE
                 string formatterPurchaseGroup = SQLArguementFormatter(recieptbarcodeInput.Text);
@@ -129,6 +130,7 @@ namespace LazerScannerUWP
                 itemCategory.Text = formattedCategory; //TODO Refer to #1
 
                 //NUMBER OF SCANS REMAINING FROM UPCITEMDB API 100/day
+                //MUST SCAN ITEM BEFORE IT WILL DISPLAY. COUNT COMES FROM HEADER.
                 requestsRemaining.Text = "Number of scans remaining: " + XRateLimitRemaining.ToString();
 
 
@@ -141,7 +143,7 @@ namespace LazerScannerUWP
                     myConnection.Open();
                     using (SqlDataReader oReader = oCmd.ExecuteReader())
                     {
-                        myConnection.Close();
+                        //myConnection.Close();
                     }
                     //Console.WriteLine("Item added to SQL server");
                 }
@@ -151,38 +153,15 @@ namespace LazerScannerUWP
         {
             return input.Replace("'", "''");
         }
-        public void PrintJSONData()
-        {
-            Console.WriteLine(JObject.Parse(JSONFromServer()));
-        }
-        private static StreamReader ExtractData(Stream data)
-        {
-            return new StreamReader(data);
-        }
-        public string JSONFromServer()
-        {
-            using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
-            {
-                string oString = "SELECT (select * from Items FOR JSON PATH, ROOT('Items'))";
-                SqlCommand oCmd = new SqlCommand(oString, myConnection);
-                myConnection.Open();
-                using (SqlDataReader oReader = oCmd.ExecuteReader())
-                {
-                    while (oReader.Read())
-                    {
-                        return (dynamic)oReader.GetValue(0);
-                    }
-                }
-                myConnection.Close();
-                return null;//TODO CAN'T RETURN NULL.
-            }
-        }
-        private void lookupButton_Click(object sender, RoutedEventArgs e)
+        private void LookupButton_Click(object sender, RoutedEventArgs e)
         {
             long input = long.Parse(barcodeInput.Text);
             bool SQLItemCheck = CheckSQLServerForData(input);
             if (SQLItemCheck == true)
             {
+                requestsRemaining.Text = "Increased item count by 1.";
+                Thread.Sleep(1000);
+                requestsRemaining.Text = "Number of scans remaining: " + XRateLimitRemaining.ToString();
                 //Console.WriteLine("Found data on SQL server. Increased quantity by +1\n");
             }
             else
@@ -215,6 +194,49 @@ namespace LazerScannerUWP
             itemWeight.Text = string.Empty;
             itemCategory.Text = string.Empty;
             descriptionTextbox.Text = string.Empty;
+        }
+
+        private void barcodeInput_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key.ToString() == "Enter" && auto_switch.IsEnabled) 
+            {
+                LookupButton_Click(sender, e);
+            }
+            
+        }
+
+        private void auto_switch_Toggled(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
+            if (toggleSwitch != null)
+            {
+                if (toggleSwitch.IsOn == true)
+                {
+                    itemName.IsEnabled = false;
+                    itemBrand.IsEnabled = false;
+                    itemModel.IsEnabled = false;
+                    itemCategory.IsEnabled = false;
+                    itemWeight.IsEnabled = false;
+                    scanDatePicker.IsEnabled = false;
+                    descriptionTextbox.IsEnabled = false;
+
+                    addButton.IsEnabled = false;
+                    clearButton.IsEnabled = false;
+                }
+                else
+                {
+                    itemName.IsEnabled =           true;
+                    itemBrand.IsEnabled =          true;
+                    itemModel.IsEnabled =          true;
+                    itemCategory.IsEnabled =       true;
+                    itemWeight.IsEnabled =         true;
+                    scanDatePicker.IsEnabled =     true;
+                    descriptionTextbox.IsEnabled = true;
+                                                   
+                    addButton.IsEnabled =          true;
+                    clearButton.IsEnabled =        true;
+                }
+            }
         }
     }
 }

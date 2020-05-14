@@ -96,6 +96,6 @@ where upc = 79400764201
 
 
 DELETE FROM Items
-WHERE ean = 51000197597;
+WHERE ean = 12000192906;
 
 SELECT (select * from Items WHERE userId = 'UID00000001' FOR JSON PATH, ROOT('Items'))

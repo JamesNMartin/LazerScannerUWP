@@ -28,7 +28,8 @@
                          HorizontalContentAlignment="Stretch" 
                          VerticalAlignment="Center"
                          Margin="0,0,0,10"
-                         CornerRadius="4"/>
+                         CornerRadius="4"
+                         KeyDown="barcodeInput_KeyDown"/>
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
                     <Button x:Name="lookupButton"
@@ -37,7 +38,7 @@
                         Margin="0,0,0,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
-                        Click="lookupButton_Click"
+                        Click="LookupButton_Click"
                         Width="100">
                         <Button.Content>
                             <FontIcon Glyph="&#xEDE4;" FontSize="24"/>
@@ -47,11 +48,11 @@
                 <StackPanel Orientation="Horizontal">
                     <ToggleSwitch x:Name="perishable_switch"
                                   Header="Perishable Entry"
-                                  IsOn="True">
+                                  IsOn="False">
                     </ToggleSwitch>
                     <ToggleSwitch x:Name="auto_switch"
                                   Header="Auto Entry"
-                                  IsOn="True">
+                                  IsOn="False" Toggled="auto_switch_Toggled">
                     </ToggleSwitch>
                 </StackPanel>
                 <TextBox x:Name="itemName"

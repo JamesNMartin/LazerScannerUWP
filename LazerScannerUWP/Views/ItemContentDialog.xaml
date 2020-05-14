@@ -7,15 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:data="using:LazerScannerUWP.Models"
     mc:Ignorable="d"
-    PrimaryButtonText="Update"
+    PrimaryButtonText="Save" Background="{ThemeResource SystemControlAcrylicWindowBrush}"
     SecondaryButtonText="Delete"
     CloseButtonText="Close"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
     CloseButtonClick="ContentDialog_CloseButtonClick" CornerRadius="4">
-
     <Grid>
-        <StackPanel VerticalAlignment="Top">
+        <StackPanel Orientation="Vertical"
+                    VerticalAlignment="Top">
             <TextBox x:Name="titleTextBlock"
                        VerticalAlignment="Top"
                        FontSize="18"
@@ -33,13 +33,42 @@
                        VerticalAlignment="Center"
                        TextWrapping="Wrap"
                        FontSize="14"
-                       Margin="0,10,0,0"
+                       Margin="0,10,0,50"
                      BorderThickness="0">
             </TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,0,0">
+            <Button x:Name="minusButton"
+                    FontFamily="Segoe MDL2 Assets" Content="&#xE738;"
+                    Margin="0,0,0,0"
+                    Width="35"
+                    Height="35"
+                    Background="{ThemeResource SystemAccentColor}"
+                    CornerRadius="4" Click="MinusButton_Click">
+            </Button>
             <TextBox x:Name="quantityTextBlock"
-                     Margin="0,0,0,0"
-                     BorderThickness="0">
+                     Margin="10,0,10,0"
+                     TextAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     Height="35"
+                     BorderThickness="0"
+                     CornerRadius="4">
             </TextBox>
+            <Button x:Name="addButton"
+                    FontFamily="Segoe MDL2 Assets" Content="&#xE710;"
+                    Margin="0,0,0,0"
+                    Width="35"
+                    Height="35"
+                    Background="{ThemeResource SystemAccentColor}"
+                    CornerRadius="4" Click="AddButton_Click">
+            </Button>
+            <TextBlock x:Name="scanDateLabel"
+                       TextAlignment="Right"
+                       HorizontalAlignment="Right"
+                       Margin="30,5,0,0">
+            </TextBlock>
         </StackPanel>
     </Grid>
 </ContentDialog>

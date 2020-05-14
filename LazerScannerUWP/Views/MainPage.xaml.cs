@@ -26,10 +26,9 @@ namespace LazerScannerUWP
     {
         public static string uid;
         public static bool perishable;
-        public static bool isLoggedIn;
 
         private static string API_TEST_URL = "https://api.upcitemdb.com/prod/trial/lookup?upc=";
-        private static string SQL_DATA_CONNECTION = "Data Source=tcp:[IP ADDRESS];Initial Catalog=LazerScanner;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
+        public static string SQL_DATA_CONNECTION = "Data Source=tcp:73.118.249.57;Initial Catalog=LazerScanner;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
     }
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
