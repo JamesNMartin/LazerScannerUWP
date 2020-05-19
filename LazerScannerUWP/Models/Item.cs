@@ -128,7 +128,8 @@ namespace LazerScannerUWP.Models
                 {
                     while (oReader.Read())
                     {
-                        if ((string)oReader.GetValue(0) == null)
+                        var dbnull = oReader.GetValue(0);
+                        if (dbnull == DBNull.Value)
                         {
                             return null;
                         }

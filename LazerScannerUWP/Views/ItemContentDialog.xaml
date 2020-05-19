@@ -12,30 +12,30 @@
     CloseButtonText="Close"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
-    CloseButtonClick="ContentDialog_CloseButtonClick" CornerRadius="4">
+    CloseButtonClick="ContentDialog_CloseButtonClick" 
+    CornerRadius="4"
+    DefaultButton="Primary">
+
     <Grid>
         <StackPanel Orientation="Vertical"
                     VerticalAlignment="Top">
-            <TextBox x:Name="titleTextBlock"
+            <TextBlock x:Name="titleTextBlock"
                        VerticalAlignment="Top"
                        FontSize="18"
-                       TextWrapping="Wrap"
-                     BorderThickness="0">
+                       TextWrapping="Wrap">
 
-            </TextBox>
-            <TextBox x:Name="categoryTextBlock"
+            </TextBlock>
+            <TextBlock x:Name="categoryTextBlock"
                        FontSize="16"
                      TextWrapping="Wrap"
-                       Margin="0,10,0,0"
-                     BorderThickness="0">
-            </TextBox>
-            <TextBox x:Name="descriptionTextBlock"
+                       Margin="0,10,0,0">
+            </TextBlock>
+            <TextBlock x:Name="descriptionTextBlock"
                        VerticalAlignment="Center"
                        TextWrapping="Wrap"
                        FontSize="14"
-                       Margin="0,10,0,50"
-                     BorderThickness="0">
-            </TextBox>
+                       Margin="0,10,0,50">
+            </TextBlock>
         </StackPanel>
         <StackPanel Orientation="Horizontal"
                     VerticalAlignment="Bottom"
@@ -48,14 +48,12 @@
                     Background="{ThemeResource SystemAccentColor}"
                     CornerRadius="4" Click="MinusButton_Click">
             </Button>
-            <TextBox x:Name="quantityTextBlock"
+            <TextBlock x:Name="quantityTextBlock"
                      Margin="10,0,10,0"
                      TextAlignment="Center"
-                     VerticalContentAlignment="Center"
                      Height="35"
-                     BorderThickness="0"
-                     CornerRadius="4">
-            </TextBox>
+                     Width="35">
+            </TextBlock>
             <Button x:Name="addButton"
                     FontFamily="Segoe MDL2 Assets" Content="&#xE710;"
                     Margin="0,0,0,0"

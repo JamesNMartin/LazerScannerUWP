@@ -57,7 +57,7 @@ namespace LazerScannerUWP
                                 //emailTextField.Text = Globals.uid;
                                 emailTextField.Text = "";
                                 passwordTextField.Password = "";
-                                this.Frame.Navigate(typeof(ViewItemPage));
+                                Frame.Navigate(typeof(ViewItemPage));
                             }
                             catch (Exception)
                             { 
@@ -79,7 +79,8 @@ namespace LazerScannerUWP
             
             emailTextField.Text = string.Empty;
             passwordTextField.Password = string.Empty;
-            this.Frame.Navigate(typeof(AddItemPage));
+            Frame.Navigate(typeof(AddItemPage));
+            
         }
 
         private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)

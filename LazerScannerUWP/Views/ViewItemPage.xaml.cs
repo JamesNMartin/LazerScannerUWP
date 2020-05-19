@@ -43,7 +43,19 @@ namespace LazerScannerUWP
 
         private void RefreshController_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
         {
-            
+            using (var RefreshCompletionDeferral = args.GetDeferral())
+            {
+                // Do some async operation to refresh the content
+                GridView.ItemsSource = null;
+                GridView.ItemsSource = ItemManager.GetItemList(Globals.uid);
+                RefreshCompletionDeferral.Complete();
+                RefreshCompletionDeferral.Dispose();
+            }
+        }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            refreshController.RequestRefresh();
         }
     }
 }

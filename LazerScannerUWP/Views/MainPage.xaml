@@ -11,13 +11,13 @@
 
     <Grid Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}">
         <NavigationView x:Name="MainContent"
-                        Header=""
+                        Header="Welcome"
                         Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}"
                         AlwaysShowHeader="True"
                         IsBackButtonVisible="Collapsed"
                         IsBackEnabled="False"
                         IsSettingsVisible="True"
-                        SelectionChanged="OnSelectionChanged">
+                        ItemInvoked="MainContent_ItemInvoked">
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Home" Tag="home">
                     <NavigationViewItem.Icon>

@@ -74,23 +74,49 @@ namespace LazerScannerUWP.Views
                     CommandType = CommandType.StoredProcedure
                 };
                 cmd.Parameters.Add(new SqlParameter("@upcInput", ean));
+                cmd.Parameters.Add(new SqlParameter("@userID", Globals.uid));
                 cmd.Parameters.Add(new SqlParameter("@theQuan", updatedQuan));
                 myConnection.Open();
                 int rowAffected = cmd.ExecuteNonQuery();
                 if (rowAffected == 1)
                 {
+
                     myConnection.Close();
                 }
                 else
                 {
                     myConnection.Close();
                 }
+                
             }
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             //DELETE
+
+
+            using (SqlConnection myConnection = new SqlConnection(Globals.SQL_DATA_CONNECTION))
+            {
+                SqlCommand cmd = new SqlCommand("deleteItem", myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                cmd.Parameters.Add(new SqlParameter("@upcInput", ean));
+                cmd.Parameters.Add(new SqlParameter("@userID", Globals.uid));
+                myConnection.Open();
+                int rowAffected = cmd.ExecuteNonQuery();
+                if (rowAffected == 1)
+                {
+
+                    myConnection.Close();
+                }
+                else
+                {
+                    myConnection.Close();
+                }
+
+            }
         }
 
         private void ContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -107,7 +133,7 @@ namespace LazerScannerUWP.Views
         private void MinusButton_Click(object sender, RoutedEventArgs e)
         {
             updatedQuan = int.Parse(quantityTextBlock.Text);
-            if (updatedQuan == 0)
+            if (updatedQuan == 1)
             {
                 quantityTextBlock.Text = "" + updatedQuan;
             }
@@ -122,7 +148,7 @@ namespace LazerScannerUWP.Views
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             updatedQuan = int.Parse(quantityTextBlock.Text);
-            if (updatedQuan == 0)
+            if (updatedQuan == 1)
             {
                 quantityTextBlock.Text = "" + updatedQuan;
             }

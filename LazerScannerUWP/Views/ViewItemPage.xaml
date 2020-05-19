@@ -11,7 +11,7 @@
 
     <Grid Background="Transparent">
         <RefreshContainer x:Name="refreshController" RefreshRequested="RefreshController_RefreshRequested">
-            <GridView ItemsSource="{x:Bind Items}" Margin="4,4,0,0" HorizontalAlignment="Stretch" IsItemClickEnabled="True" ItemClick="GridView_ItemClick">
+            <GridView x:Name="GridView" ItemsSource="{x:Bind Items, Mode=TwoWay}" Margin="4,4,0,0" HorizontalAlignment="Stretch" IsItemClickEnabled="True" ItemClick="GridView_ItemClick">
                 <GridView.ItemTemplate>
                     <DataTemplate x:DataType="data:Item">
                         <StackPanel Margin="0,0,0,0"
@@ -27,5 +27,16 @@
                 </GridView.ItemTemplate>
             </GridView>
         </RefreshContainer>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button x:Name="testButton" 
+                    CornerRadius="4" 
+                    FontFamily="Segoe MDL2 Assets" 
+                    Content="&#xE72C;" 
+                    Margin="0,0,0,0" 
+                    Click="TestButton_Click"
+                    Background="{ThemeResource SystemAccentColor}">
+
+            </Button>
+        </StackPanel>
     </Grid>
 </Page>

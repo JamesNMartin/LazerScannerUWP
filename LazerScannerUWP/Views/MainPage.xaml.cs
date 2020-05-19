@@ -40,17 +40,18 @@ namespace LazerScannerUWP
             this.InitializeComponent();
             // Use system back button to navigate back between content pages.
             SystemNavigationManager.GetForCurrentView().BackRequested += MainPage_BackRequested;
-            this.ContentFrame.Navigated += ContentFrame_Navigated;
+            ContentFrame.Navigated += ContentFrame_Navigated;
 
             // Use custom title bar.
             var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
 
-            this.UpdateTitleBarLayout(coreTitleBar);
+            UpdateTitleBarLayout(coreTitleBar);
             //Window.Current.SetTitleBar(this.AppTitleBar);
 
             coreTitleBar.LayoutMetricsChanged += (s, a) => UpdateTitleBarLayout(s);
 
-            this.Loaded += MainPage_Loaded;
+            Loaded += MainPage_Loaded;
+
         }
 
         private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
@@ -60,7 +61,7 @@ namespace LazerScannerUWP
 
         private void UpdateAppBackButton()
         {
-            var backButtonVisibility = this.ContentFrame.CanGoBack ?
+            var backButtonVisibility = ContentFrame.CanGoBack ?
                                        AppViewBackButtonVisibility.Visible :
                                        AppViewBackButtonVisibility.Collapsed;
 
@@ -71,16 +72,16 @@ namespace LazerScannerUWP
             var snm = SystemNavigationManager.GetForCurrentView();
             snm.AppViewBackButtonVisibility = backButtonVisibility;
 
-            //this.BackButtonBackground.Visibility = backgroundVisibility;
+            //BackButtonBackground.Visibility = backgroundVisibility;
         }
 
         private void MainPage_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            if (this.ContentFrame.CanGoBack)
+            if (ContentFrame.CanGoBack)
             {
                 // Since back navigations may contain connected animations, suppress the default
                 // animation transition.
-                this.ContentFrame.GoBack(new SuppressNavigationTransitionInfo());
+                ContentFrame.GoBack(new SuppressNavigationTransitionInfo());
                 e.Handled = true;
             }
         }
@@ -91,7 +92,7 @@ namespace LazerScannerUWP
             //// (returned in logical pixels), and move your content around as necessary.
             var isVisible = SystemNavigationManager
                                 .GetForCurrentView()
-                                .AppViewBackButtonVisibility == AppViewBackButtonVisibility.Visible;
+                                .AppViewBackButtonVisibility == AppViewBackButtonVisibility.Disabled;
 
             var width = isVisible ? coreTitleBar.SystemOverlayLeftInset : 0;
 
@@ -104,6 +105,7 @@ namespace LazerScannerUWP
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             this.MainContent.SelectedItem = this.MainContent.MenuItems.First();
+            ContentFrame.Navigate(typeof(WelcomePage));
         }
 
         private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -152,7 +154,59 @@ namespace LazerScannerUWP
                 //this.UpdateAppBackButton();
                 return;
             }
-            ContentFrame.Navigate(typeof(StatisticsPage), tag);
+            //ContentFrame.Navigate(typeof(StatisticsPage), tag);
+        }
+
+        private void MainContent_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+        {
+
+            if (args.IsSettingsInvoked)
+            {
+                // Code here
+                ContentFrame.Navigate(typeof(SettingsPage));
+                MainContent.Header = "Settings";
+            }
+            else
+            {
+                string navTo = args.InvokedItemContainer.Tag.ToString();
+
+                if (navTo != null)
+                {
+                    switch (navTo)
+                    {
+                        case "home":
+                            ContentFrame.Navigate(typeof(WelcomePage));
+                            MainContent.Header = "Welcome";
+                            break;
+
+                        case "add_item":
+                            ContentFrame.Navigate(typeof(AddItemPage));
+                            MainContent.Header = "Add Items";
+                            break;
+
+                        case "view_item":
+                            ContentFrame.Navigate(typeof(ViewItemPage));
+                            MainContent.Header = "Inventory";
+                            break;
+
+                        case "shopping_list":
+                            ContentFrame.Navigate(typeof(ShoppingListPage));
+                            MainContent.Header = "Shopping List";
+                            break;
+
+                        case "statistics":
+                            ContentFrame.Navigate(typeof(StatisticsPage));
+                            MainContent.Header = "Statistics";
+                            break;
+                    }
+                }
+            }
+
+        }
+
+        private void MainContent_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+
         }
     }
 }

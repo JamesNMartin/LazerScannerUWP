@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using LazerScannerUWP.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -58,7 +59,7 @@ namespace LazerScannerUWP
 
             return JsonConvert.DeserializeObject(html);
         }
-        public bool CheckSQLServerForData(long ean)
+        public bool CheckSQLServerForDataToIncreaseQuantity(long ean)
         {
             using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
             {
@@ -67,6 +68,7 @@ namespace LazerScannerUWP
                     CommandType = CommandType.StoredProcedure
                 };
                 cmd.Parameters.Add(new SqlParameter("@upcInput", ean));
+                cmd.Parameters.Add(new SqlParameter("@userID", Globals.uid));
                 myConnection.Open();
                 int rowAffected = cmd.ExecuteNonQuery();
                 if (rowAffected == 1)
@@ -109,13 +111,13 @@ namespace LazerScannerUWP
                 string webModel = requestResponse.items[0].model;
                 string webWeight = requestResponse.items[0].weight;
                 string webCategory = requestResponse.items[0].category; //TODO #1 go through this string and pull out the category
-                
-                
+
+
                 string imageURL = requestResponse.items[0].images[0];//TODO Some items do not have an image. (returns null?) Need to handle this
                                                                      //TEST WITH 20LB BAG OF SAFEWAY RICE
-                
+
                 // FORMATTING ALL THE TEXT TO HAVE DOUBLE SINGLE QUOTE SO SQL QUERY IS NOT ENDED IN THE WRONG PLACE
-                string formatterPurchaseGroup = SQLArguementFormatter(recieptbarcodeInput.Text);
+                string formattedPurchaseGroup = SQLArguementFormatter(recieptbarcodeInput.Text);
                 string formattedTitle = SQLArguementFormatter(webTitle);
                 itemName.Text = formattedTitle;
                 string formattedDesc = SQLArguementFormatter(webDesc);
@@ -128,6 +130,7 @@ namespace LazerScannerUWP
                 itemWeight.Text = formattedWeight;
                 string formattedCategory = SQLArguementFormatter(webCategory);
                 itemCategory.Text = formattedCategory; //TODO Refer to #1
+                itemImageURL.Text = imageURL;
 
                 //NUMBER OF SCANS REMAINING FROM UPCITEMDB API 100/day
                 //MUST SCAN ITEM BEFORE IT WILL DISPLAY. COUNT COMES FROM HEADER.
@@ -136,16 +139,29 @@ namespace LazerScannerUWP
 
                 DateTime scannedDate = DateTime.Today;
                 int quanNeeded = 1;
-                using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
+
+                //THIS IS TRULY PEAK GARBAGE CODE AND CODE PLACEMENT. YOU GOTTA MOVE THIS IF YOU EVER WANT THIS TO BE READABLE TO FUTURE YOU.
+                if (auto_switch.IsOn)
                 {
-                    string oString = $"INSERT INTO Items(userId,purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl)VALUES('{Globals.uid}','{formatterPurchaseGroup}','{webEan}','{formattedTitle}','{webUpc}','{formattedDesc}','{formattedBrand}','{formattedModel}','{formattedWeight}','{formattedCategory}','{quanNeeded}','{scannedDate}','{imageURL}')";
-                    SqlCommand oCmd = new SqlCommand(oString, myConnection);
-                    myConnection.Open();
-                    using (SqlDataReader oReader = oCmd.ExecuteReader())
+                    using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
                     {
-                        //myConnection.Close();
+                        string oString = $"INSERT INTO Items(userId,purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl)VALUES('{Globals.uid}','{formattedPurchaseGroup}','{webEan}','{formattedTitle}','{webUpc}','{formattedDesc}','{formattedBrand}','{formattedModel}','{formattedWeight}','{formattedCategory}','{quanNeeded}','{scannedDate}','{imageURL}')";
+                        SqlCommand oCmd = new SqlCommand(oString, myConnection);
+                        myConnection.Open();
+                        using (SqlDataReader oReader = oCmd.ExecuteReader())
+                        {
+                            //myConnection.Close();
+                        }
+                        CleanTextFields();
+                        barcodeInput.Focus(FocusState.Programmatic);
+                        //Console.WriteLine("Item added to SQL server");
                     }
-                    //Console.WriteLine("Item added to SQL server");
+                }
+                if (!auto_switch.IsOn)
+                {
+                    //DO NOTHING? 
+                    //I MEAN ALL THE TEXT BOXES HAVE THE TEXT IF ITS FOUND, IF NOT ENTER IT YOURSELF. 
+
                 }
             }
         }
@@ -156,7 +172,7 @@ namespace LazerScannerUWP
         private void LookupButton_Click(object sender, RoutedEventArgs e)
         {
             long input = long.Parse(barcodeInput.Text);
-            bool SQLItemCheck = CheckSQLServerForData(input);
+            bool SQLItemCheck = CheckSQLServerForDataToIncreaseQuantity(input);
             if (SQLItemCheck == true)
             {
                 requestsRemaining.Text = "Increased item count by 1.";
@@ -166,8 +182,11 @@ namespace LazerScannerUWP
             }
             else
             {
-                //Console.WriteLine("Not found on the SQL server. Checking UPCItemDB...");
-                IsWebRequestValid(WebLookup(input));
+                //BEFORE ASKING UPCITEMDB, I WANT TO CHECK IF I HAD ALREADY MADE A COPY OF THE ITEM.
+                //THIS WAY I DONT WASTE MY API CALL LIMIT OF 100
+
+
+                IsWebRequestValid(WebLookup(input)); //WHY DID I DO THIS TO MYSELF!?!?!?
             }
         }
 
@@ -183,8 +202,22 @@ namespace LazerScannerUWP
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             //descriptionTextbox.Text = JSONFromServer();
+
         }
         private void ClearConfirmation_Click(object sender, RoutedEventArgs e)
+        {
+            CleanTextFields();
+        }
+
+        private void barcodeInput_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key.ToString() == "Enter" && auto_switch.IsEnabled)
+            {
+                LookupButton_Click(sender, e);
+            }
+
+        }
+        private void CleanTextFields()
         {
             recieptbarcodeInput.IsEnabled = true;
             barcodeInput.Text = string.Empty;
@@ -195,16 +228,6 @@ namespace LazerScannerUWP
             itemCategory.Text = string.Empty;
             descriptionTextbox.Text = string.Empty;
         }
-
-        private void barcodeInput_KeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            if (e.Key.ToString() == "Enter" && auto_switch.IsEnabled) 
-            {
-                LookupButton_Click(sender, e);
-            }
-            
-        }
-
         private void auto_switch_Toggled(object sender, RoutedEventArgs e)
         {
             ToggleSwitch toggleSwitch = sender as ToggleSwitch;
@@ -225,16 +248,16 @@ namespace LazerScannerUWP
                 }
                 else
                 {
-                    itemName.IsEnabled =           true;
-                    itemBrand.IsEnabled =          true;
-                    itemModel.IsEnabled =          true;
-                    itemCategory.IsEnabled =       true;
-                    itemWeight.IsEnabled =         true;
-                    scanDatePicker.IsEnabled =     true;
+                    itemName.IsEnabled = true;
+                    itemBrand.IsEnabled = true;
+                    itemModel.IsEnabled = true;
+                    itemCategory.IsEnabled = true;
+                    itemWeight.IsEnabled = true;
+                    scanDatePicker.IsEnabled = true;
                     descriptionTextbox.IsEnabled = true;
-                                                   
-                    addButton.IsEnabled =          true;
-                    clearButton.IsEnabled =        true;
+
+                    addButton.IsEnabled = true;
+                    clearButton.IsEnabled = true;
                 }
             }
         }

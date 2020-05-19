@@ -85,6 +85,13 @@
                          VerticalAlignment="Center"
                          Margin="0,0,0,10"
                          CornerRadius="4"/>
+                <TextBox x:Name="itemImageURL"
+                         Header="Image URL (Direct)"
+                         PlaceholderText="https://www.example.com/image.jpg"
+                         CornerRadius="4"
+                         Margin="0,0,0,10"
+                         HorizontalContentAlignment="Stretch"
+                         VerticalAlignment="Center"/>
                 <DatePicker x:Name="scanDatePicker"
                             Header="Scan Date"
                             Margin="0,0,0,10"
