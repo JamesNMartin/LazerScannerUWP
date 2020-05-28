@@ -52,7 +52,8 @@
                      Margin="10,0,10,0"
                      TextAlignment="Center"
                      Height="35"
-                     Width="35">
+                     Width="35"
+                       FontSize="22">
             </TextBlock>
             <Button x:Name="addButton"
                     FontFamily="Segoe MDL2 Assets" Content="&#xE710;"

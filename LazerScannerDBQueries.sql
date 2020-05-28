@@ -20,6 +20,7 @@ CREATE TABLE Items (
 		[scandate] date,
 		[imageurl] nvarchar(max)
 	);
+--############################################################################
 
 /* ITEM TABLE FOR STORING ITEM DATA COPIED FROM API */
 /* APPLICATION WILL CHECK STORED ITEMS FIRST BEFORE CALLING THE API LOOKUP */
@@ -36,8 +37,12 @@ CREATE TABLE StoredItems (
 		PRIMARY KEY( [ean] )
 	);
 
-select *
-from StoredItems
+SELECT (select * from StoredItems WHERE ean = '51000059772' FOR JSON PATH, ROOT('ItemInfo'))
+
+SELECT * FROM StoredItems
+
+--############################################################################
+
 
 SELECT I.userId,purchaseGroup,title,upc,description,brand,category,quantity,scandate,imageurl
 FROM Items as I INNER JOIN Users as U

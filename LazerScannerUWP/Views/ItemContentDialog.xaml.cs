@@ -26,10 +26,6 @@ namespace LazerScannerUWP.Views
         private int updatedQuan = 0;
         private long ean = 0;
 
-
-
-
-
         public ItemContentDialog(string theTitle, string theBrand, string theDescription, int theQuantity, string theCategory, DateTime theDate, long theEan)
         {
             InitializeComponent();
@@ -56,6 +52,7 @@ namespace LazerScannerUWP.Views
 
             ItemContentDialog dialog = new ItemContentDialog(title, brand, description, quantity, category, date, ean);
             await dialog.ShowAsync();
+
         }
 
         private static Image ImageSource(string imageurl)
@@ -80,7 +77,7 @@ namespace LazerScannerUWP.Views
                 int rowAffected = cmd.ExecuteNonQuery();
                 if (rowAffected == 1)
                 {
-
+                    
                     myConnection.Close();
                 }
                 else
@@ -94,8 +91,6 @@ namespace LazerScannerUWP.Views
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             //DELETE
-
-
             using (SqlConnection myConnection = new SqlConnection(Globals.SQL_DATA_CONNECTION))
             {
                 SqlCommand cmd = new SqlCommand("deleteItem", myConnection)
@@ -108,7 +103,7 @@ namespace LazerScannerUWP.Views
                 int rowAffected = cmd.ExecuteNonQuery();
                 if (rowAffected == 1)
                 {
-
+                    
                     myConnection.Close();
                 }
                 else
@@ -118,10 +113,10 @@ namespace LazerScannerUWP.Views
 
             }
         }
-
         private void ContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             //CLOSE
+            
         }
 
         private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
@@ -148,16 +143,10 @@ namespace LazerScannerUWP.Views
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             updatedQuan = int.Parse(quantityTextBlock.Text);
-            if (updatedQuan == 1)
-            {
-                quantityTextBlock.Text = "" + updatedQuan;
-            }
-            else
-            {
-                updatedQuan++;
-                quantityTextBlock.Text = "" + updatedQuan;
 
-            }
+            updatedQuan++;
+            quantityTextBlock.Text = "" + updatedQuan;
+
         }
     }
 }

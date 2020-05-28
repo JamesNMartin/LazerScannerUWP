@@ -8,7 +8,8 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
     xmlns:muxc="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Loaded="Page_Loaded">
 
     <Grid>
         <ScrollViewer Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}"
@@ -48,7 +49,8 @@
                 <StackPanel Orientation="Horizontal">
                     <ToggleSwitch x:Name="perishable_switch"
                                   Header="Perishable Entry"
-                                  IsOn="False">
+                                  IsOn="False"
+                                  IsEnabled="False">
                     </ToggleSwitch>
                     <ToggleSwitch x:Name="auto_switch"
                                   Header="Auto Entry"
@@ -96,6 +98,35 @@
                             Header="Scan Date"
                             Margin="0,0,0,10"
                             CornerRadius="4"/>
+                <TextBlock Text="Quantity"
+                           Margin="0,0,0,4"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="minusButton"
+                        FontFamily="Segoe MDL2 Assets"
+                        Content="&#xE738;"
+                        Width="35"
+                        Height="35"
+                        Background="{ThemeResource SystemAccentColor}"
+                        CornerRadius="4"
+                        Margin="0,0,0,10" Click="minusButton_Click"/>
+                    <TextBox x:Name="quantityTextBlock"
+                               TextAlignment="Center"
+                               Width="35"
+                               Height="35"
+                               Text="1"
+                               Margin="10,0,10,10"
+                               FontSize="20"
+                               BorderThickness="0"
+                               Background="Transparent"/>
+                    <Button x:Name="plusButton"
+                            Width="35"
+                            Height="35"
+                            FontFamily="Segoe MDL2 Assets"
+                            Content="&#xE710;"
+                            CornerRadius="4"
+                            Margin="0,0,0,10"
+                            Background="{ThemeResource SystemAccentColor}" Click="plusButton_Click"/>
+                </StackPanel>
                 <TextBox x:Name="descriptionTextbox"
                          Header="Item Description"
                          TextWrapping="Wrap"

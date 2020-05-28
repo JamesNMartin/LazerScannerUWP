@@ -40,11 +40,6 @@
                         <FontIcon Glyph="&#xE719;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Statistics" Tag="statistics">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE9D2;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
             </NavigationView.MenuItems>
             <Frame x:Name="ContentFrame">
                 <Frame.ContentTransitions>

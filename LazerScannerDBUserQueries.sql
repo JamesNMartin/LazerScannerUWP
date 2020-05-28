@@ -18,4 +18,4 @@ SELECT UserID FROM Users WHERE email = 'jamesnicholasmartin@gmail.com' AND passw
 SELECT (SELECT UserID FROM Users WHERE email = 'jamesnicholasmartin@gmail.com' AND password='password')
 
 DELETE FROM Users
-WHERE UserID = 'UID00000003';
+WHERE UserID = 'UID00000004';

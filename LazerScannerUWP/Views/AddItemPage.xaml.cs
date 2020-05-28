@@ -1,4 +1,6 @@
-﻿using LazerScannerUWP.Models;
+﻿using ColorCode.Compilation.Languages;
+using LazerScannerUWP.Models;
+using Microsoft.Toolkit.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
+using Windows.ApplicationModel.Chat;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Popups;
@@ -33,7 +36,9 @@ namespace LazerScannerUWP
         private int XRateLimitRemaining = 0;
         private const string API_TEST_URL = "https://api.upcitemdb.com/prod/trial/lookup?upc=";
         private string SQL_DATA_CONNECTION = "Data Source=tcp:73.118.249.57;Initial Catalog=LazerScanner;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
-
+        private long CURRENT_ITEM_UPC = 0;
+        private List<StoredItem> StoredItemsList = new List<StoredItem>();
+        private int itemQuantity = 1;
 
         public AddItemPage()
         {
@@ -41,7 +46,7 @@ namespace LazerScannerUWP
             scanDatePicker.SelectedDate = DateTime.Now;
         }
 
-        public dynamic WebLookup(long upc)
+        public dynamic CheckAPIForItemData(long upc)
         {
             string html = string.Empty;
             string url = API_TEST_URL + upc;
@@ -94,6 +99,11 @@ namespace LazerScannerUWP
             else if (requestResponse.code == "TOO_FAST")
             {
                 requestsRemaining.Text = "Scanning too fast. Try again in ~30sec.";
+                
+                StoredItem storedItem = new StoredItem(CURRENT_ITEM_UPC);
+                StoredItemsList.Add(storedItem);
+
+
 
             }
             else if (requestResponse.code == "OK" && requestResponse.total == 0)
@@ -141,20 +151,54 @@ namespace LazerScannerUWP
                 int quanNeeded = 1;
 
                 //THIS IS TRULY PEAK GARBAGE CODE AND CODE PLACEMENT. YOU GOTTA MOVE THIS IF YOU EVER WANT THIS TO BE READABLE TO FUTURE YOU.
+                /*
+                 * @userId VARCHAR(11),
+				   @purchaseGroup NVARCHAR(255),
+				   @ean bigint,
+				   @title NVARCHAR(255),
+				   @upc bigint,
+			       @description nvarchar(max),
+				   @brand nvarchar(255),
+				   @model nvarchar(255),
+				   @weight nvarchar(255),
+				   @category nvarchar(255),
+				   @quantity int,
+				   @scandate date,
+				   @imageurl nvarchar(max)
+                 * 
+                 */
                 if (auto_switch.IsOn)
                 {
                     using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
                     {
-                        string oString = $"INSERT INTO Items(userId,purchaseGroup,ean,title,upc,description,brand,model,weight,category,quantity,scandate,imageurl)VALUES('{Globals.uid}','{formattedPurchaseGroup}','{webEan}','{formattedTitle}','{webUpc}','{formattedDesc}','{formattedBrand}','{formattedModel}','{formattedWeight}','{formattedCategory}','{quanNeeded}','{scannedDate}','{imageURL}')";
-                        SqlCommand oCmd = new SqlCommand(oString, myConnection);
-                        myConnection.Open();
-                        using (SqlDataReader oReader = oCmd.ExecuteReader())
+                        SqlCommand cmd = new SqlCommand("insertData", myConnection)
                         {
-                            //myConnection.Close();
+                            CommandType = CommandType.StoredProcedure
+                        };
+                        cmd.Parameters.Add(new SqlParameter("@userId", Globals.uid));
+                        cmd.Parameters.Add(new SqlParameter("@purchaseGroup", formattedPurchaseGroup));
+                        cmd.Parameters.Add(new SqlParameter("@ean", webEan));
+                        cmd.Parameters.Add(new SqlParameter("@title", formattedTitle));
+                        cmd.Parameters.Add(new SqlParameter("@upc", webUpc));
+                        cmd.Parameters.Add(new SqlParameter("@description", formattedDesc));
+                        cmd.Parameters.Add(new SqlParameter("@brand", formattedBrand));
+                        cmd.Parameters.Add(new SqlParameter("@model", formattedModel));
+                        cmd.Parameters.Add(new SqlParameter("@weight", webWeight));
+                        cmd.Parameters.Add(new SqlParameter("@category", formattedCategory));
+                        cmd.Parameters.Add(new SqlParameter("@quantity", quanNeeded));
+                        cmd.Parameters.Add(new SqlParameter("@scandate", scannedDate));
+                        cmd.Parameters.Add(new SqlParameter("@imageurl", imageURL));
+
+                        myConnection.Open();
+                        int rowAffected = cmd.ExecuteNonQuery();
+                        if (rowAffected == 1)
+                        {
+                            myConnection.Close();
                         }
-                        CleanTextFields();
-                        barcodeInput.Focus(FocusState.Programmatic);
-                        //Console.WriteLine("Item added to SQL server");
+                        else
+                        {
+                            myConnection.Close();
+                        }
                     }
                 }
                 if (!auto_switch.IsOn)
@@ -171,25 +215,52 @@ namespace LazerScannerUWP
         }
         private void LookupButton_Click(object sender, RoutedEventArgs e)
         {
-            long input = long.Parse(barcodeInput.Text);
-            bool SQLItemCheck = CheckSQLServerForDataToIncreaseQuantity(input);
+            CURRENT_ITEM_UPC = long.Parse(barcodeInput.Text);
+            bool SQLItemCheck = CheckSQLServerForDataToIncreaseQuantity(CURRENT_ITEM_UPC);
             if (SQLItemCheck == true)
             {
                 requestsRemaining.Text = "Increased item count by 1.";
                 Thread.Sleep(1000);
                 requestsRemaining.Text = "Number of scans remaining: " + XRateLimitRemaining.ToString();
-                //Console.WriteLine("Found data on SQL server. Increased quantity by +1\n");
+                
             }
             else
             {
                 //BEFORE ASKING UPCITEMDB, I WANT TO CHECK IF I HAD ALREADY MADE A COPY OF THE ITEM.
-                //THIS WAY I DONT WASTE MY API CALL LIMIT OF 100
+                //THIS WAY I DON'T WASTE MY API CALL LIMIT OF 100
 
 
-                IsWebRequestValid(WebLookup(input)); //WHY DID I DO THIS TO MYSELF!?!?!?
+
+                IsWebRequestValid(CheckAPIForItemData(CURRENT_ITEM_UPC)); //WHY DID I DO THIS TO MYSELF, FUCKIN HELL!
             }
         }
 
+        private string CheckSQLServerForItemData(long theEAN)
+        {
+
+            using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
+            {
+                string oString = $"SELECT (select * from StoredItems WHERE ean = '{theEAN}' FOR JSON PATH, ROOT('ItemInfo'))";
+                SqlCommand oCmd = new SqlCommand(oString, myConnection);
+                myConnection.Open();
+                using (SqlDataReader oReader = oCmd.ExecuteReader())
+                {
+                    while (oReader.Read())
+                    {
+                        var dbnull = oReader.GetValue(0);
+                        if (dbnull == DBNull.Value)
+                        {
+                            return null;
+                        }
+                        else
+                        {
+                            return (string)oReader.GetValue(0);
+                        }
+                    }
+                }
+                return null;
+            }
+        }
         private void RecieptbarcodeInput_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key.ToString() == "Enter")
@@ -202,6 +273,42 @@ namespace LazerScannerUWP
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             //descriptionTextbox.Text = JSONFromServer();
+            using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
+            {
+                SqlCommand cmd = new SqlCommand("insertData", myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                cmd.Parameters.Add(new SqlParameter("@userId", Globals.uid));
+                cmd.Parameters.Add(new SqlParameter("@purchaseGroup", SQLArguementFormatter(recieptbarcodeInput.Text)));
+                cmd.Parameters.Add(new SqlParameter("@ean", barcodeInput.Text));
+                cmd.Parameters.Add(new SqlParameter("@title", SQLArguementFormatter(itemName.Text)));
+                cmd.Parameters.Add(new SqlParameter("@upc", barcodeInput.Text));
+                cmd.Parameters.Add(new SqlParameter("@description", SQLArguementFormatter(descriptionTextbox.Text)));
+                cmd.Parameters.Add(new SqlParameter("@brand", SQLArguementFormatter(itemBrand.Text)));
+                cmd.Parameters.Add(new SqlParameter("@model", SQLArguementFormatter(itemModel.Text)));
+                cmd.Parameters.Add(new SqlParameter("@weight", SQLArguementFormatter(itemWeight.Text)));
+                cmd.Parameters.Add(new SqlParameter("@category", SQLArguementFormatter(itemCategory.Text)));
+                cmd.Parameters.Add(new SqlParameter("@quantity", itemQuantity));
+                cmd.Parameters.Add(new SqlParameter("@scandate", scanDatePicker.SelectedDate));
+                cmd.Parameters.Add(new SqlParameter("@imageurl", itemImageURL.Text));
+
+                myConnection.Open();
+                int rowAffected = cmd.ExecuteNonQuery(); //BECAUSE THE STORED PROC IS COPYING THE DATA ON INSERT IT WILL CRASH IF STOREDITEMS HAS IT ALREADY DUE TO PK VIOLATION
+                if (rowAffected == 1)
+                {
+                    //EMPTY THE TEXT FIELD
+                    CleanTextFields();
+                    //MAKE KEYBOARD ACTIVE FOR NEW INPUT
+                    barcodeInput.Focus(FocusState.Keyboard);
+                    myConnection.Close();
+                }
+                else
+                {
+                    myConnection.Close();
+                }
+            }
+
 
         }
         private void ClearConfirmation_Click(object sender, RoutedEventArgs e)
@@ -226,7 +333,11 @@ namespace LazerScannerUWP
             itemModel.Text = string.Empty;
             itemWeight.Text = string.Empty;
             itemCategory.Text = string.Empty;
+            itemImageURL.Text = string.Empty;
             descriptionTextbox.Text = string.Empty;
+
+            itemQuantity = 1;
+            quantityTextBlock.Text = itemQuantity.ToString();
         }
         private void auto_switch_Toggled(object sender, RoutedEventArgs e)
         {
@@ -240,8 +351,11 @@ namespace LazerScannerUWP
                     itemModel.IsEnabled = false;
                     itemCategory.IsEnabled = false;
                     itemWeight.IsEnabled = false;
+                    itemImageURL.IsEnabled = false;
                     scanDatePicker.IsEnabled = false;
                     descriptionTextbox.IsEnabled = false;
+                    addButton.IsEnabled = false;
+                    minusButton.IsEnabled = false;
 
                     addButton.IsEnabled = false;
                     clearButton.IsEnabled = false;
@@ -253,12 +367,41 @@ namespace LazerScannerUWP
                     itemModel.IsEnabled = true;
                     itemCategory.IsEnabled = true;
                     itemWeight.IsEnabled = true;
+                    itemImageURL.IsEnabled = true;
                     scanDatePicker.IsEnabled = true;
                     descriptionTextbox.IsEnabled = true;
 
                     addButton.IsEnabled = true;
                     clearButton.IsEnabled = true;
                 }
+            }
+        }
+
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            barcodeInput.Focus(FocusState.Keyboard);
+        }
+
+        private void plusButton_Click(object sender, RoutedEventArgs e)
+        {
+            itemQuantity = int.Parse(quantityTextBlock.Text);
+
+            itemQuantity++;
+            quantityTextBlock.Text = "" + itemQuantity;
+        }
+
+        private void minusButton_Click(object sender, RoutedEventArgs e)
+        {
+            itemQuantity = int.Parse(quantityTextBlock.Text);
+            if (itemQuantity == 1)
+            {
+                quantityTextBlock.Text = "" + itemQuantity;
+            }
+            else
+            {
+                itemQuantity--;
+                quantityTextBlock.Text = "" + itemQuantity;
             }
         }
     }

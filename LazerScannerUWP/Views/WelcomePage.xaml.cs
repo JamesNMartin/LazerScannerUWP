@@ -20,97 +20,20 @@ using System.Threading;
 
 namespace LazerScannerUWP
 {
-    
+
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class WelcomePage : Page
     {
-
-        private string SQL_DATA_CONNECTION = "Data Source=tcp:73.118.249.57;Initial Catalog=LazerScanner;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
-
-
         public WelcomePage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
-        private void SignInButton_Click(object sender, RoutedEventArgs e)
+        private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if (emailTextField.Text == "" || passwordTextField.Password == "")
-            {
-                Msgbox.Show("Please enter email, and password");
-            } else
-            {
-                using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
-                {
-                    string oString = $"SELECT (SELECT UserID FROM Users WHERE email = '{emailTextField.Text}' AND password='{passwordTextField.Password}')";
-                    SqlCommand oCmd = new SqlCommand(oString, myConnection);
-                    myConnection.Open();
-                    using (SqlDataReader oReader = oCmd.ExecuteReader())
-                    {
-                        while (oReader.Read())
-                        {
-                            try
-                            {
-                                Globals.uid = (string)oReader.GetValue(0);
-                                //emailTextField.Text = Globals.uid;
-                                emailTextField.Text = "";
-                                passwordTextField.Password = "";
-                                Frame.Navigate(typeof(ViewItemPage));
-                            }
-                            catch (Exception)
-                            { 
-                                throw;//YOLO
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        private void CreateAcctButton_Click(object sender, RoutedEventArgs e)
-        {
-            string email = emailTextField.Text;
-            string pwd = passwordTextField.Password;
-            string userID = CreateAccountOnSQLServer(email, pwd);//TODO Save this ID somehow for the session for later when we need to ge the items
 
-            Globals.uid = userID;
-            
-            emailTextField.Text = string.Empty;
-            passwordTextField.Password = string.Empty;
-            Frame.Navigate(typeof(AddItemPage));
-            
-        }
-
-        private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)
-        {
-            Msgbox.Show("Not ready");
-        }
-        private string CreateAccountOnSQLServer(string email, string pwd)
-        {
-            using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
-            {
-                string oString = $"INSERT INTO Users(email,password)OUTPUT inserted.UserID VALUES('{email}', '{pwd}')";
-                SqlCommand oCmd = new SqlCommand(oString, myConnection);
-                myConnection.Open();
-                using (SqlDataReader oReader = oCmd.ExecuteReader())
-                {
-                    while (oReader.Read())
-                    {
-                        return (string)oReader.GetValue(0);
-                    }
-                }
-                return null;
-            }
-        }
-    }
-    public static class Msgbox
-    {
-        static public async void Show(string m)
-        {
-            var dialog = new MessageDialog(m);
-            await dialog.ShowAsync();
         }
     }
 }

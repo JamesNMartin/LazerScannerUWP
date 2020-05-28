@@ -30,6 +30,7 @@ namespace LazerScannerUWP
     {
 
         private List<Item> Items;
+
         public ViewItemPage()
         {
             this.InitializeComponent();
@@ -52,10 +53,22 @@ namespace LazerScannerUWP
                 RefreshCompletionDeferral.Dispose();
             }
         }
-
+        public void RefreshGrid(bool theRefreshStatus)
+        {
+            if (theRefreshStatus)
+            {
+                refreshController.RequestRefresh();
+            }
+        }
         private void TestButton_Click(object sender, RoutedEventArgs e)
         {
             refreshController.RequestRefresh();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            refreshController.RequestRefresh();
+
         }
     }
 }
