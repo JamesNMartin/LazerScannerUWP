@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LazerScannerUWP.Models;
+using LazerScannerUWP.Views;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +24,46 @@ namespace LazerScannerUWP
     /// </summary>
     public sealed partial class ShoppingListPage : Page
     {
+        private List<ShoppingListItem> Items;
+
         public ShoppingListPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            Items = ShoppingListItemManager.GetShoppingItemList(Globals.uid);
+        }
+
+        private void GridView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            //var item = (ShoppingListItem)e.ClickedItem;
+            //ItemContentDialog.Show(item);
+        }
+        private void RefreshController_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
+        {
+            using (var RefreshCompletionDeferral = args.GetDeferral())
+            {
+                // Do some async operation to refresh the content
+                GridView.ItemsSource = null;
+                GridView.ItemsSource = ShoppingListItemManager.GetShoppingItemList(Globals.uid);
+                RefreshCompletionDeferral.Complete();
+                RefreshCompletionDeferral.Dispose();
+            }
+        }
+        public void RefreshGrid(bool theRefreshStatus)
+        {
+            if (theRefreshStatus)
+            {
+                refreshController.RequestRefresh();
+            }
+        }
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            refreshController.RequestRefresh();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            refreshController.RequestRefresh();
+
         }
     }
 }

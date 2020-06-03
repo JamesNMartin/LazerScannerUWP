@@ -11,6 +11,19 @@
     Loaded="Page_Loaded">
 
     <Grid>
-        
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <StackPanel Width="200" Height="200" Background="Transparent">
+                <TextBlock Text="Number of Items in Inventory" TextWrapping="Wrap" TextAlignment="Center" FontSize="16"/>
+                <TextBlock x:Name="inventoryCountTextBlock" Text="0" Foreground="{ThemeResource SystemAccentColor}" FontSize="64" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Width="200" Height="200" Background="Transparent">
+                <TextBlock Text="Number of Items on Shopping List" TextWrapping="Wrap" TextAlignment="Center" FontSize="16"/>
+                <TextBlock x:Name="shoppingListCountTextBlock" Text="0" Foreground="{ThemeResource SystemAccentColor}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="64"/>
+            </StackPanel>
+            <StackPanel Width="200" Height="200" Background="Transparent">
+                <TextBlock Text="Number of API Calls Remaining" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
+                <TextBlock x:Name="apiCallsRemainingTextBlock" Text="0" Foreground="{ThemeResource SystemAccentColor}" FontSize="64" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Page>

@@ -34,8 +34,6 @@ namespace LazerScannerUWP
     public sealed partial class AddItemPage : Page
     {
         private int XRateLimitRemaining = 0;
-        private const string API_TEST_URL = "https://api.upcitemdb.com/prod/trial/lookup?upc=";
-        private string SQL_DATA_CONNECTION = "Data Source=tcp:73.118.249.57;Initial Catalog=LazerScanner;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
         private long CURRENT_ITEM_UPC = 0;
         private List<StoredItem> StoredItemsList = new List<StoredItem>();
         private int itemQuantity = 1;
@@ -49,7 +47,7 @@ namespace LazerScannerUWP
         public dynamic CheckAPIForItemData(long upc)
         {
             string html = string.Empty;
-            string url = API_TEST_URL + upc;
+            string url = Globals.API_TEST_URL + upc;
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.AutomaticDecompression = DecompressionMethods.GZip;
@@ -66,7 +64,7 @@ namespace LazerScannerUWP
         }
         public bool CheckSQLServerForDataToIncreaseQuantity(long ean)
         {
-            using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
+            using (SqlConnection myConnection = new SqlConnection(Globals.SQL_DATA_CONNECTION))
             {
                 SqlCommand cmd = new SqlCommand("increaseQuan", myConnection)
                 {
@@ -144,8 +142,8 @@ namespace LazerScannerUWP
 
                 //NUMBER OF SCANS REMAINING FROM UPCITEMDB API 100/day
                 //MUST SCAN ITEM BEFORE IT WILL DISPLAY. COUNT COMES FROM HEADER.
+                Globals.API_CALL_COUNT = int.Parse(XRateLimitRemaining.ToString());
                 requestsRemaining.Text = "Number of scans remaining: " + XRateLimitRemaining.ToString();
-
 
                 DateTime scannedDate = DateTime.Today;
                 int quanNeeded = 1;
@@ -169,7 +167,7 @@ namespace LazerScannerUWP
                  */
                 if (auto_switch.IsOn)
                 {
-                    using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
+                    using (SqlConnection myConnection = new SqlConnection(Globals.SQL_DATA_CONNECTION))
                     {
                         SqlCommand cmd = new SqlCommand("insertData", myConnection)
                         {
@@ -238,7 +236,7 @@ namespace LazerScannerUWP
         private string CheckSQLServerForItemData(long theEAN)
         {
 
-            using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
+            using (SqlConnection myConnection = new SqlConnection(Globals.SQL_DATA_CONNECTION))
             {
                 string oString = $"SELECT (select * from StoredItems WHERE ean = '{theEAN}' FOR JSON PATH, ROOT('ItemInfo'))";
                 SqlCommand oCmd = new SqlCommand(oString, myConnection);
@@ -273,7 +271,7 @@ namespace LazerScannerUWP
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             //descriptionTextbox.Text = JSONFromServer();
-            using (SqlConnection myConnection = new SqlConnection(SQL_DATA_CONNECTION))
+            using (SqlConnection myConnection = new SqlConnection(Globals.SQL_DATA_CONNECTION))
             {
                 SqlCommand cmd = new SqlCommand("insertData", myConnection)
                 {
@@ -294,7 +292,7 @@ namespace LazerScannerUWP
                 cmd.Parameters.Add(new SqlParameter("@imageurl", itemImageURL.Text));
 
                 myConnection.Open();
-                int rowAffected = cmd.ExecuteNonQuery(); //BECAUSE THE STORED PROC IS COPYING THE DATA ON INSERT IT WILL CRASH IF STOREDITEMS HAS IT ALREADY DUE TO PK VIOLATION
+                int rowAffected = cmd.ExecuteNonQuery();
                 if (rowAffected == 1)
                 {
                     //EMPTY THE TEXT FIELD
@@ -354,11 +352,13 @@ namespace LazerScannerUWP
                     itemImageURL.IsEnabled = false;
                     scanDatePicker.IsEnabled = false;
                     descriptionTextbox.IsEnabled = false;
-                    addButton.IsEnabled = false;
+                    plusButton.IsEnabled = false;
                     minusButton.IsEnabled = false;
 
                     addButton.IsEnabled = false;
                     clearButton.IsEnabled = false;
+
+                    //barcodeInput.Focus(FocusState.Keyboard);
                 }
                 else
                 {
@@ -370,6 +370,8 @@ namespace LazerScannerUWP
                     itemImageURL.IsEnabled = true;
                     scanDatePicker.IsEnabled = true;
                     descriptionTextbox.IsEnabled = true;
+                    plusButton.IsEnabled = true;
+                    minusButton.IsEnabled = true;
 
                     addButton.IsEnabled = true;
                     clearButton.IsEnabled = true;
@@ -380,7 +382,7 @@ namespace LazerScannerUWP
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            barcodeInput.Focus(FocusState.Keyboard);
+            barcodeInput.Focus(FocusState.Keyboard);//TODO hmmmmmmm
         }
 
         private void plusButton_Click(object sender, RoutedEventArgs e)

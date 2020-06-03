@@ -117,6 +117,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\ShoppingListItem.cs" />
     <Compile Include="Models\StoredItem.cs" />
     <Compile Include="Views\AddItemPage.xaml.cs">
       <DependentUpon>AddItemPage.xaml</DependentUpon>

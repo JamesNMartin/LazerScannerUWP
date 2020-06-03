@@ -49,6 +49,7 @@ namespace LazerScannerUWP
                             try
                             {
                                 Globals.uid = (string)oReader.GetValue(0);
+                                
                                 //emailTextField.Text = Globals.uid;
                                 emailTextField.Text = "";
                                 passwordTextField.Password = "";
@@ -68,7 +69,7 @@ namespace LazerScannerUWP
         {
             string email = emailTextField.Text;
             string pwd = passwordTextField.Password;
-            string userID = CreateAccountOnSQLServer(email, pwd);//TODO Save this ID somehow for the session for later when we need to ge the items
+            string userID = CreateAccountOnSQLServer(email, pwd);
 
             Globals.uid = userID;
 
@@ -80,13 +81,14 @@ namespace LazerScannerUWP
 
         private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)
         {
-            Msgbox.Show("Not ready");
+            Globals.uid = string.Empty;
+            Msgbox.Show("Signed out, Goodbye!");
         }
         private string CreateAccountOnSQLServer(string email, string pwd)
         {
             using (SqlConnection myConnection = new SqlConnection(Globals.SQL_DATA_CONNECTION))
             {
-                string oString = $"INSERT INTO Users(email,password)OUTPUT inserted.UserID VALUES('{email}', '{pwd}')";
+                string oString = $"INSERT INTO Users(email,password)OUTPUT inserted.UserID VALUES('{email}','{pwd}')";
                 SqlCommand oCmd = new SqlCommand(oString, myConnection);
                 myConnection.Open();
                 using (SqlDataReader oReader = oCmd.ExecuteReader())

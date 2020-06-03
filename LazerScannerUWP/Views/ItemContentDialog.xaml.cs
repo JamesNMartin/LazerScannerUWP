@@ -25,6 +25,7 @@ namespace LazerScannerUWP.Views
     {
         private int updatedQuan = 0;
         private long ean = 0;
+        private static Item itemCopy;
 
         public ItemContentDialog(string theTitle, string theBrand, string theDescription, int theQuantity, string theCategory, DateTime theDate, long theEan)
         {
@@ -36,12 +37,21 @@ namespace LazerScannerUWP.Views
             //this.quantityTextBlock.Text = "You have " + theQuantity + " on hand.";
             quantityTextBlock.Text = theQuantity.ToString();
             categoryTextBlock.Text = theCategory;
-            scanDateLabel.Text = "Date first scanned: " + theDate.ToShortDateString();
+            scanDateLabel.Text = "Scan Date: " + theDate.ToShortDateString();
             ean = theEan;
 
         }
+
+        internal static void Show(ShoppingListItem item)
+        {
+            throw new NotImplementedException();
+        }
+
         static public async void Show(Item theItem)
         {
+
+            itemCopy = theItem;
+
             long ean = theItem.ean;
             string brand = theItem.brand;
             string description = theItem.description;
@@ -53,11 +63,6 @@ namespace LazerScannerUWP.Views
             ItemContentDialog dialog = new ItemContentDialog(title, brand, description, quantity, category, date, ean);
             await dialog.ShowAsync();
 
-        }
-
-        private static Image ImageSource(string imageurl)
-        {
-            throw new NotImplementedException();
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -91,26 +96,56 @@ namespace LazerScannerUWP.Views
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             //DELETE
-            using (SqlConnection myConnection = new SqlConnection(Globals.SQL_DATA_CONNECTION))
+            if (Globals.MOVE_TO_SHOPPING_LIST_ON_DELETE)
             {
-                SqlCommand cmd = new SqlCommand("deleteItem", myConnection)
+                using (SqlConnection myConnection = new SqlConnection(Globals.SQL_DATA_CONNECTION))
                 {
-                    CommandType = CommandType.StoredProcedure
-                };
-                cmd.Parameters.Add(new SqlParameter("@upcInput", ean));
-                cmd.Parameters.Add(new SqlParameter("@userID", Globals.uid));
-                myConnection.Open();
-                int rowAffected = cmd.ExecuteNonQuery();
-                if (rowAffected == 1)
-                {
-                    
-                    myConnection.Close();
+                    SqlCommand cmd = new SqlCommand("sendToShoppingList", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.Add(new SqlParameter("@userID", Globals.uid));
+                    cmd.Parameters.Add(new SqlParameter("@ean",itemCopy.ean));
+                    cmd.Parameters.Add(new SqlParameter("@title",itemCopy.title));
+                    cmd.Parameters.Add(new SqlParameter("@upc",itemCopy.upc));
+                    cmd.Parameters.Add(new SqlParameter("@brand",itemCopy.brand));
+                    cmd.Parameters.Add(new SqlParameter("@model",itemCopy.model));
+                    cmd.Parameters.Add(new SqlParameter("@category",itemCopy.category));
+                    cmd.Parameters.Add(new SqlParameter("@imageurl",itemCopy.imageurl));
+                    myConnection.Open();
+                    int rowAffected = cmd.ExecuteNonQuery();
+                    if (rowAffected == 1)
+                    {
+                        myConnection.Close();
+                    }
+                    else
+                    {
+                        myConnection.Close();
+                    }
                 }
-                else
+            }
+            else
+            {
+                using (SqlConnection myConnection = new SqlConnection(Globals.SQL_DATA_CONNECTION))
                 {
-                    myConnection.Close();
-                }
+                    SqlCommand cmd = new SqlCommand("deleteItem", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.Add(new SqlParameter("@upcInput", ean));
+                    cmd.Parameters.Add(new SqlParameter("@userID", Globals.uid));
+                    myConnection.Open();
+                    int rowAffected = cmd.ExecuteNonQuery();
+                    if (rowAffected == 1)
+                    {
 
+                        myConnection.Close();
+                    }
+                    else
+                    {
+                        myConnection.Close();
+                    }
+                }
             }
         }
         private void ContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -147,6 +182,16 @@ namespace LazerScannerUWP.Views
             updatedQuan++;
             quantityTextBlock.Text = "" + updatedQuan;
 
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            Globals.MOVE_TO_SHOPPING_LIST_ON_DELETE = true;
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Globals.MOVE_TO_SHOPPING_LIST_ON_DELETE = false;
         }
     }
 }

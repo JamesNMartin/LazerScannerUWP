@@ -126,6 +126,7 @@ BEGIN
 			@quantity,
 			@scandate,
 			@imageurl)
+	IF NOT EXISTS (SELECT @ean FROM StoredItems WHERE ean = @ean)
 	INSERT INTO 
 			StoredItems
 			(ean,

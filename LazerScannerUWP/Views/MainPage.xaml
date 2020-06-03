@@ -7,17 +7,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}">
+    Background="White">
 
-    <Grid Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}">
+    <Grid Background="White">
         <NavigationView x:Name="MainContent"
                         Header="Welcome"
-                        Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}"
+                        Background="Transparent"
                         AlwaysShowHeader="True"
                         IsBackButtonVisible="Collapsed"
                         IsBackEnabled="False"
                         IsSettingsVisible="True"
                         ItemInvoked="MainContent_ItemInvoked">
+
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Home" Tag="home">
                     <NavigationViewItem.Icon>

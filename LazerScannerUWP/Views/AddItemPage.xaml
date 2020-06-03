@@ -8,11 +8,11 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
     xmlns:muxc="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Background="White"
     Loaded="Page_Loaded">
 
     <Grid>
-        <ScrollViewer Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}"
+        <ScrollViewer Background="White"
                       x:Name="scrollView">
             <StackPanel Margin="10,10,10,0">
                 <TextBox x:Name="recieptbarcodeInput"
@@ -40,7 +40,8 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Click="LookupButton_Click"
-                        Width="100">
+                        Width="100"
+                            ToolTipService.ToolTip="Lookup Item by UPC">
                         <Button.Content>
                             <FontIcon Glyph="&#xEDE4;" FontSize="24"/>
                         </Button.Content>
@@ -111,7 +112,7 @@
                         Margin="0,0,0,10" Click="minusButton_Click"/>
                     <TextBox x:Name="quantityTextBlock"
                                TextAlignment="Center"
-                               Width="35"
+                               Width="auto"
                                Height="35"
                                Text="1"
                                Margin="10,0,10,10"

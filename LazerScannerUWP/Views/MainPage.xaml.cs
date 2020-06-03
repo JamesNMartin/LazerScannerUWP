@@ -8,6 +8,7 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -22,12 +23,16 @@ using Windows.UI.Xaml.Navigation;
 
 namespace LazerScannerUWP
 {
-    static class Globals
+    class Globals
     {
         public static string uid;
-        public static bool perishable;
+        //public static bool perishable;
+        public static int API_CALL_COUNT = 0;
+        public static int INVENTORY_ITEM_COUNT = 0;
+        public static int SHOPPING_LIST_ITEM_COUNT = 0;
+        public static bool MOVE_TO_SHOPPING_LIST_ON_DELETE = false;
 
-        private static string API_TEST_URL = "https://api.upcitemdb.com/prod/trial/lookup?upc=";
+        public static string API_TEST_URL = "https://api.upcitemdb.com/prod/trial/lookup?upc=";
         public static string SQL_DATA_CONNECTION = "Data Source=tcp:73.118.249.57;Initial Catalog=LazerScanner;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
     }
     /// <summary>
@@ -37,19 +42,19 @@ namespace LazerScannerUWP
     {
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             // Use system back button to navigate back between content pages.
             SystemNavigationManager.GetForCurrentView().BackRequested += MainPage_BackRequested;
             ContentFrame.Navigated += ContentFrame_Navigated;
 
             // Use custom title bar.
             var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-
+            
             UpdateTitleBarLayout(coreTitleBar);
             //Window.Current.SetTitleBar(this.AppTitleBar);
 
             coreTitleBar.LayoutMetricsChanged += (s, a) => UpdateTitleBarLayout(s);
-
+            
             Loaded += MainPage_Loaded;
 
         }

@@ -19,3 +19,4 @@ SELECT (SELECT UserID FROM Users WHERE email = 'jamesnicholasmartin@gmail.com' A
 
 DELETE FROM Users
 WHERE UserID = 'UID00000004';
+
