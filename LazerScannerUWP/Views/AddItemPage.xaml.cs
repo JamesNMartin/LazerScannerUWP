@@ -198,6 +198,8 @@ namespace LazerScannerUWP
                             myConnection.Close();
                         }
                     }
+                    barcodeInput.SelectAll();
+
                 }
                 if (!auto_switch.IsOn)
                 {
@@ -220,7 +222,8 @@ namespace LazerScannerUWP
                 requestsRemaining.Text = "Increased item count by 1.";
                 Thread.Sleep(1000);
                 requestsRemaining.Text = "Number of scans remaining: " + XRateLimitRemaining.ToString();
-                
+                barcodeInput.SelectAll();
+
             }
             else
             {
@@ -344,6 +347,8 @@ namespace LazerScannerUWP
             {
                 if (toggleSwitch.IsOn == true)
                 {
+                    barcodeInput.Focus(FocusState.Keyboard);
+
                     itemName.IsEnabled = false;
                     itemBrand.IsEnabled = false;
                     itemModel.IsEnabled = false;
