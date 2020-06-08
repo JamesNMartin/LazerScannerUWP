@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LazerScannerUWP.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
@@ -53,11 +54,19 @@ namespace LazerScannerUWP
                                 //emailTextField.Text = Globals.uid;
                                 emailTextField.Text = "";
                                 passwordTextField.Password = "";
-                                Frame.Navigate(typeof(ViewItemPage));
+
+                                Globals.UNIQUE_INVENTORY_ITEM_COUNT = GenerateDashboard.GetUniqueItemCount(Globals.uid);
+                                Globals.SHOPPING_LIST_ITEM_COUNT = GenerateDashboard.GetShoppingListCount(Globals.uid);
+                                Globals.INVENTORY_ITEM_COUNT = GenerateDashboard.GetInventoryListCount(Globals.uid);
+
+                                Frame.Navigate(typeof(WelcomePage));
                             }
-                            catch (Exception)
+                            catch (InvalidCastException)
                             {
-                                throw;//YOLO
+                                Msgbox.Show("Login credentials invalid. Please try again.");
+                                emailTextField.Text = string.Empty;
+                                passwordTextField.Password = string.Empty;
+                                //throw theException;
                             }
                         }
                     }
@@ -75,7 +84,7 @@ namespace LazerScannerUWP
 
             emailTextField.Text = string.Empty;
             passwordTextField.Password = string.Empty;
-            Frame.Navigate(typeof(AddItemPage));
+            Frame.Navigate(typeof(WelcomePage));
 
         }
 

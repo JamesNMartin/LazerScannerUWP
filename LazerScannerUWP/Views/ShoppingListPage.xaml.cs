@@ -26,6 +26,7 @@ namespace LazerScannerUWP
     {
         private List<ShoppingListItem> Items;
 
+
         public ShoppingListPage()
         {
             InitializeComponent();
@@ -34,7 +35,8 @@ namespace LazerScannerUWP
 
         private void GridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            //var item = (ShoppingListItem)e.ClickedItem;
+            var item = (ShoppingListItem)e.ClickedItem;
+            
             //ItemContentDialog.Show(item);
         }
         private void RefreshController_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
@@ -48,22 +50,19 @@ namespace LazerScannerUWP
                 RefreshCompletionDeferral.Dispose();
             }
         }
-        public void RefreshGrid(bool theRefreshStatus)
-        {
-            if (theRefreshStatus)
-            {
-                refreshController.RequestRefresh();
-            }
-        }
-        private void TestButton_Click(object sender, RoutedEventArgs e)
-        {
-            refreshController.RequestRefresh();
-        }
-
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             refreshController.RequestRefresh();
+        }
 
+        private void refreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            refreshController.RequestRefresh();
+        }
+
+        private void moveToInvButton_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

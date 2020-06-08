@@ -116,6 +116,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Models\GenerateDashboard.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\ShoppingListItem.cs" />
     <Compile Include="Models\StoredItem.cs" />

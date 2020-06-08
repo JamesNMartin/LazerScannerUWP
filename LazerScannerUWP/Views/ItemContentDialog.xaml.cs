@@ -91,6 +91,9 @@ namespace LazerScannerUWP.Views
                 }
                 
             }
+            Globals.SHOPPING_LIST_ITEM_COUNT = GenerateDashboard.GetShoppingListCount(Globals.uid);
+            Globals.UNIQUE_INVENTORY_ITEM_COUNT = GenerateDashboard.GetUniqueItemCount(Globals.uid);
+            Globals.INVENTORY_ITEM_COUNT = GenerateDashboard.GetInventoryListCount(Globals.uid);
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -123,6 +126,10 @@ namespace LazerScannerUWP.Views
                         myConnection.Close();
                     }
                 }
+                Globals.SHOPPING_LIST_ITEM_COUNT = GenerateDashboard.GetShoppingListCount(Globals.uid);
+                Globals.UNIQUE_INVENTORY_ITEM_COUNT = GenerateDashboard.GetUniqueItemCount(Globals.uid);
+                Globals.INVENTORY_ITEM_COUNT = GenerateDashboard.GetInventoryListCount(Globals.uid);
+
             }
             else
             {
@@ -146,6 +153,9 @@ namespace LazerScannerUWP.Views
                         myConnection.Close();
                     }
                 }
+                Globals.UNIQUE_INVENTORY_ITEM_COUNT = GenerateDashboard.GetUniqueItemCount(Globals.uid);
+                Globals.SHOPPING_LIST_ITEM_COUNT = GenerateDashboard.GetShoppingListCount(Globals.uid);
+                Globals.INVENTORY_ITEM_COUNT = GenerateDashboard.GetInventoryListCount(Globals.uid);
             }
         }
         private void ContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -153,13 +163,6 @@ namespace LazerScannerUWP.Views
             //CLOSE
             
         }
-
-        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            //EDIT SWITCH TOGGLED
-
-        }
-
         private void MinusButton_Click(object sender, RoutedEventArgs e)
         {
             updatedQuan = int.Parse(quantityTextBlock.Text);

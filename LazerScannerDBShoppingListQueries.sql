@@ -16,6 +16,8 @@ CREATE TABLE ShoppingList (
 SELECT *
 FROM ShoppingList
 
+SELECT (SELECT COUNT(*) FROM ShoppingList WHERE userId = 'UID00000001')
+
 SELECT (select * from ShoppingList WHERE userId = 'UID00000001' FOR JSON PATH, ROOT('Items'))
 
 --############################################################################
@@ -49,5 +51,17 @@ BEGIN
 	FROM Items
 	WHERE upc = @upc AND userId = @userID
 END;
+
+--############################################################################
+GO
+CREATE PROCEDURE moveFromShoppingListToInventoryc (@userId @ean bigint) AS BEGIN
+		INSERT INTO Items (userId, ean, title, upc, description, brand, model, weight,category,quantity,scandate,imageurl)
+		VALUES()
+		SELECT ean,title,upc,description,brand,model,weight,category,imageurl
+		FROM StoredItems
+		WHERE ean = @ean
+END;
+
+
 
 --############################################################################

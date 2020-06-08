@@ -55,6 +55,10 @@ select *
 from Items
 Where upc = 41321241789
 
+DELETE 
+FROM Items 
+WHERE userId = 'UID00000009'
+
 select upc
 from Items
 where ean = 051000059772
@@ -79,6 +83,8 @@ VALUES('UID00000003',
 	   '1',
 	   '08/24/2019',
 	   'https://target.scene7.com/is/image/Target/GUEST_22949660-e631-4f8d-adbb-85368095658f?wid=1000&hei=1000')
+
+SELECT SUM(quantity) FROM Items WHERE userId = 'UID00000001'
 
 --############################################################################
 GO 

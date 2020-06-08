@@ -30,6 +30,7 @@ namespace LazerScannerUWP
         {
             InitializeComponent();
             apiCallsRemainingTextBlock.Text = Globals.API_CALL_COUNT.ToString();
+            uniqueInventoryCountTextBlock.Text = Globals.UNIQUE_INVENTORY_ITEM_COUNT.ToString();
             inventoryCountTextBlock.Text = Globals.INVENTORY_ITEM_COUNT.ToString();
             shoppingListCountTextBlock.Text = Globals.SHOPPING_LIST_ITEM_COUNT.ToString();
         }

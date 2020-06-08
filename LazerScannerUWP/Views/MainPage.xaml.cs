@@ -28,12 +28,13 @@ namespace LazerScannerUWP
         public static string uid;
         //public static bool perishable;
         public static int API_CALL_COUNT = 0;
-        public static int INVENTORY_ITEM_COUNT = 0;
+        public static int UNIQUE_INVENTORY_ITEM_COUNT = 0;
         public static int SHOPPING_LIST_ITEM_COUNT = 0;
+        public static int INVENTORY_ITEM_COUNT = 0;
         public static bool MOVE_TO_SHOPPING_LIST_ON_DELETE = false;
 
         public static string API_TEST_URL = "https://api.upcitemdb.com/prod/trial/lookup?upc=";
-        public static string SQL_DATA_CONNECTION = "Data Source=tcp:73.118.249.57;Initial Catalog=LazerScanner;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
+        public static string SQL_DATA_CONNECTION = "Data Source=tcp:sql.jamesnmartin.com;Initial Catalog=LazerScanner;Persist Security Info=False;User ID=sa;Password=nothingtoseehere";
     }
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

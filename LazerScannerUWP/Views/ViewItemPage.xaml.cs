@@ -60,12 +60,12 @@ namespace LazerScannerUWP
                 refreshController.RequestRefresh();
             }
         }
-        private void TestButton_Click(object sender, RoutedEventArgs e)
+        private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             refreshController.RequestRefresh();
-        }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        }
+        private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
             refreshController.RequestRefresh();
 

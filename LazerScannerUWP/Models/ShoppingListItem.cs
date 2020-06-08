@@ -30,39 +30,47 @@ namespace LazerScannerUWP.Models
 
             //TODO This may reply with null if there is no items for the user. It is currently not handled.
             string json = JSONFromServer(uid);
-            var resultObjects = AllChildren(JObject.Parse(json))
+            try
+            {
+                var resultObjects = AllChildren(JObject.Parse(json))
             .First(c => c.Type == JTokenType.Array && c.Path.Contains("Items"))
             .Children<JObject>();
 
-            //Set shopping list count for "dashboard"
-            Globals.SHOPPING_LIST_ITEM_COUNT = resultObjects.Count();
+                //Set shopping list count for "dashboard"
+                Globals.SHOPPING_LIST_ITEM_COUNT = resultObjects.Count();
 
-            foreach (JObject result in resultObjects)
-            {
-                //FOR EACH RESULT, GRAB ALL THE DATA
-                string theUserId = (string)result.GetValue("userId");
-                long theEan = (long)result.GetValue("ean");
-                string theTitle = CapitalizeFirstLetter((string)result.GetValue("title"));
-                long theUpc = (long)result.GetValue("upc");
-                string theBrand = CapitalizeFirstLetter((string)result.GetValue("brand"));
-                string theModel = CapitalizeFirstLetter((string)result.GetValue("model"));
-                string theCategory = (string)result.GetValue("category");
-                string theImageurl = (string)result.GetValue("imageurl");
-
-                //ONCE ALL THE VALUES ARE COLLECTED, ADD THEM TO A ITEM MODEL
-                items.Add(new ShoppingListItem()
+                foreach (JObject result in resultObjects)
                 {
-                    userId = theUserId,
-                    ean = theEan,
-                    title = theTitle,
-                    upc = theUpc,
-                    brand = theBrand,
-                    model = theModel,
-                    category = theCategory,
-                    imageurl = theImageurl
-                });
+                    //FOR EACH RESULT, GRAB ALL THE DATA
+                    string theUserId = (string)result.GetValue("userId");
+                    long theEan = (long)result.GetValue("ean");
+                    string theTitle = CapitalizeFirstLetter((string)result.GetValue("title"));
+                    long theUpc = (long)result.GetValue("upc");
+                    string theBrand = CapitalizeFirstLetter((string)result.GetValue("brand"));
+                    string theModel = CapitalizeFirstLetter((string)result.GetValue("model"));
+                    string theCategory = (string)result.GetValue("category");
+                    string theImageurl = (string)result.GetValue("imageurl");
+
+                    //ONCE ALL THE VALUES ARE COLLECTED, ADD THEM TO A ITEM MODEL
+                    items.Add(new ShoppingListItem()
+                    {
+                        userId = theUserId,
+                        ean = theEan,
+                        title = theTitle,
+                        upc = theUpc,
+                        brand = theBrand,
+                        model = theModel,
+                        category = theCategory,
+                        imageurl = theImageurl
+                    });
+                }
+                return items;
             }
-            return items;
+            catch (ArgumentNullException)
+            {
+
+            }
+            return null;
         }
         private static string CapitalizeFirstLetter(string value)
         {

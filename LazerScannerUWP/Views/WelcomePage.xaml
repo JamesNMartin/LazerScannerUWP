@@ -11,9 +11,13 @@
     Loaded="Page_Loaded">
 
     <Grid>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0">
             <StackPanel Width="200" Height="200" Background="Transparent">
-                <TextBlock Text="Number of Items in Inventory" TextWrapping="Wrap" TextAlignment="Center" FontSize="16"/>
+                <TextBlock Text="Number of Unique Items in Inventory" TextWrapping="Wrap" TextAlignment="Center" FontSize="16"/>
+                <TextBlock x:Name="uniqueInventoryCountTextBlock" Text="0" Foreground="{ThemeResource SystemAccentColor}" FontSize="64" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Width="200" Height="200" Background="Transparent">
+                <TextBlock Text="Total Number of Items in Inventory" TextWrapping="Wrap" TextAlignment="Center" FontSize="16"/>
                 <TextBlock x:Name="inventoryCountTextBlock" Text="0" Foreground="{ThemeResource SystemAccentColor}" FontSize="64" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </StackPanel>
             <StackPanel Width="200" Height="200" Background="Transparent">

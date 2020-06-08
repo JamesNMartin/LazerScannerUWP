@@ -1,4 +1,4 @@
-﻿ using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -35,50 +35,58 @@ namespace LazerScannerUWP.Models
             var items = new List<Item>();
 
             //TODO This may reply with null if there is no items for the user. It is currently not handled.
-            string json = JSONFromServer(uid); 
-            var resultObjects = AllChildren(JObject.Parse(json))
-            .First(c => c.Type == JTokenType.Array && c.Path.Contains("Items"))
-            .Children<JObject>();
-
-            //Set item count for "dashboard"
-            Globals.INVENTORY_ITEM_COUNT = resultObjects.Count();
-
-            foreach (JObject result in resultObjects)
+            string json = JSONFromServer(uid);
+            try
             {
-                //FOR EACH RESULT, GRAB ALL THE DATA
-                string theUserId = (string)result.GetValue("userId");
-                string thePurchaseGroup = (string)result.GetValue("purchaseGroup");
-                long theEan = (long)result.GetValue("ean");
-                string theTitle = CapitalizeFirstLetter((string)result.GetValue("title"));
-                long theUpc = (long)result.GetValue("upc");
-                string theDescription = CapitalizeFirstLetter((string)result.GetValue("description"));
-                string theBrand = CapitalizeFirstLetter((string)result.GetValue("brand"));
-                string theModel = CapitalizeFirstLetter((string)result.GetValue("model"));
-                string theWeight = (string)result.GetValue("weight");
-                string theCategory = (string)result.GetValue("category");
-                int theQuantity = (int)result.GetValue("quantity");
-                DateTime theScandate = (DateTime)result.GetValue("scandate");
-                string theImageurl = (string)result.GetValue("imageurl");
+                var resultObjects = AllChildren(JObject.Parse(json))
+                .First(c => c.Type == JTokenType.Array && c.Path.Contains("Items"))
+                .Children<JObject>();
 
-                //ONCE ALL THE VALUES ARE COLLECTED, ADD THEM TO A ITEM MODEL
-                items.Add(new Item()
+                //Set item count for "dashboard"
+                Globals.INVENTORY_ITEM_COUNT = resultObjects.Count();
+
+                foreach (JObject result in resultObjects)
                 {
-                    userId = theUserId,
-                    purchaseGroup = thePurchaseGroup,
-                    ean = theEan,
-                    title = theTitle,
-                    upc = theUpc,
-                    description = theDescription,
-                    brand = theBrand,
-                    model = theModel,
-                    weight = theWeight,
-                    category = theCategory,
-                    quantity = theQuantity,
-                    scandate = theScandate,
-                    imageurl = theImageurl
-                });
+                    //FOR EACH RESULT, GRAB ALL THE DATA
+                    string theUserId = (string)result.GetValue("userId");
+                    string thePurchaseGroup = (string)result.GetValue("purchaseGroup");
+                    long theEan = (long)result.GetValue("ean");
+                    string theTitle = CapitalizeFirstLetter((string)result.GetValue("title"));
+                    long theUpc = (long)result.GetValue("upc");
+                    string theDescription = CapitalizeFirstLetter((string)result.GetValue("description"));
+                    string theBrand = CapitalizeFirstLetter((string)result.GetValue("brand"));
+                    string theModel = CapitalizeFirstLetter((string)result.GetValue("model"));
+                    string theWeight = (string)result.GetValue("weight");
+                    string theCategory = (string)result.GetValue("category");
+                    int theQuantity = (int)result.GetValue("quantity");
+                    DateTime theScandate = (DateTime)result.GetValue("scandate");
+                    string theImageurl = (string)result.GetValue("imageurl");
+
+                    //ONCE ALL THE VALUES ARE COLLECTED, ADD THEM TO A ITEM MODEL
+                    items.Add(new Item()
+                    {
+                        userId = theUserId,
+                        purchaseGroup = thePurchaseGroup,
+                        ean = theEan,
+                        title = theTitle,
+                        upc = theUpc,
+                        description = theDescription,
+                        brand = theBrand,
+                        model = theModel,
+                        weight = theWeight,
+                        category = theCategory,
+                        quantity = theQuantity,
+                        scandate = theScandate,
+                        imageurl = theImageurl
+                    });
+                }
+                return items;
             }
-            return items;
+            catch (ArgumentNullException)
+            {
+                //Msgbox.Show("");
+            }
+            return null; //YOLO
         }
         private static string CapitalizeFirstLetter(string value)
         {
