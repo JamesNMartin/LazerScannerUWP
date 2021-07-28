@@ -1,4 +1,5 @@
 # LazerScannerUWP
+(Z stands for Zebra, which is the scanner used in this project)
 
 TINFO 481 - Design Project 
 University of Washington Tacoma - June 2020
